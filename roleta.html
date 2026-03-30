@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -27,32 +27,33 @@
 
         .container { max-width: 400px; width: 100%; }
 
+        h2 { margin-bottom: 5px; color: var(--accent); }
+
         .wheel-container {
             position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 40px auto;
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            width: 320px;
+            height: 320px;
+            margin: 30px auto;
         }
 
-        canvas {
+        #wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 5px solid var(--vintage-brown);
+            border: 8px solid var(--vintage-brown);
+            background-color: white;
             transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
         }
 
         .pointer {
             position: absolute;
-            top: -15px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
             width: 0; height: 0;
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
-            border-top: 30px solid #e63946;
+            border-top: 35px solid #e63946;
             z-index: 100;
         }
 
@@ -60,24 +61,23 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 40px;
             font-size: 1.2rem;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 0 #8a4a16;
+            margin-top: 20px;
         }
-
-        .btn-spin:active { transform: translateY(2px); box-shadow: 0 2px 0 #8a4a16; }
-        .btn-spin:disabled { background: #ccc; box-shadow: none; }
 
         #result {
             display: none;
-            margin-top: 30px;
+            margin-top: 25px;
             padding: 20px;
             background: white;
             border-radius: 15px;
-            border: 2px dashed var(--vintage-gold);
+            border: 3px solid var(--vintage-gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .whatsapp-link {
@@ -86,8 +86,8 @@
             background: #25d366;
             color: white;
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            border-radius: 8px;
             font-weight: bold;
         }
     </style>
@@ -96,29 +96,29 @@
 
 <div class="container">
     <h2>Nostálgicas Personalizados</h2>
-    <p>Obrigado pela sua compra! Gire para ganhar seu presente acumulativo:</p>
+    <p>Gire para ganhar um presente para seu próximo pedido!</p>
 
     <div class="wheel-container">
         <div class="pointer"></div>
         <canvas id="wheel" width="500" height="500"></canvas>
     </div>
 
-    <button class="btn-spin" id="spinBtn" onclick="spin()">GIRAR AGORA</button>
+    <button class="btn-spin" id="spinBtn" onclick="spin()">GIRAR ROLETA</button>
 
     <div id="result">
-        <h3 id="prizeTitle"></h3>
-        <p id="prizeDesc"></p>
+        <h3 id="prizeTitle" style="margin:0; color: var(--accent);"></h3>
+        <p id="prizeDesc" style="font-size: 1.1rem; margin: 10px 0;"></p>
         <a id="waLink" href="#" class="whatsapp-link" target="_blank">Resgatar via WhatsApp</a>
     </div>
 </div>
 
 <script>
     const prizes = [
-        { name: "Cupom Indicação", desc: "10% para você e 10% para seu indicado!" },
-        { name: "15% OFF", desc: "Desconto especial para sua próxima compra." },
-        { name: "Mini Álbum", desc: "Ganhou um Chuveirinho com 10 fotos no próximo pedido!" },
-        { name: "R$ 10 OFF", desc: "R$ 10 de desconto garantido na próxima compra." },
-        { name: "Frete Grátis", desc: "Sua próxima entrega é por nossa conta!" }
+        "Cupom Indicação",
+        "15% de Desconto",
+        "Mini Álbum 10 fotos",
+        "R$ 10 OFF",
+        "Frete Grátis"
     ];
 
     const colors = ["#d4a373", "#ccd5ae", "#e9edc9", "#fefae0", "#faedcd"];
@@ -126,24 +126,28 @@
     const ctx = canvas.getContext("2d");
     let currentRotation = 0;
 
-    function draw() {
+    function drawWheel() {
         const arc = (2 * Math.PI) / prizes.length;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
         for (let i = 0; i < prizes.length; i++) {
+            ctx.save();
             ctx.beginPath();
             ctx.fillStyle = colors[i];
             ctx.moveTo(250, 250);
             ctx.arc(250, 250, 250, i * arc, (i + 1) * arc);
             ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#463f3a";
             ctx.stroke();
 
-            // Texto das fatias
-            ctx.save();
+            // Texto
             ctx.translate(250, 250);
             ctx.rotate(i * arc + arc / 2);
             ctx.textAlign = "right";
             ctx.fillStyle = "#463f3a";
-            ctx.font = "bold 24px Georgia";
-            ctx.fillText(prizes[i].name, 230, 10);
+            ctx.font = "bold 22px Arial";
+            ctx.fillText(prizes[i], 230, 10);
             ctx.restore();
         }
     }
@@ -152,29 +156,32 @@
         const btn = document.getElementById("spinBtn");
         btn.disabled = true;
 
-        const rounds = Math.floor(Math.random() * 5) + 10; 
-        const extraDegrees = Math.floor(Math.random() * 360);
-        currentRotation += (rounds * 360) + extraDegrees;
+        const extraDegrees = Math.floor(Math.random() * 360) + 2880; // 8 voltas + aleatório
+        currentRotation += extraDegrees;
         
         canvas.style.transform = `rotate(${currentRotation}deg)`;
 
         setTimeout(() => {
             const actualDeg = currentRotation % 360;
-            const prizeIndex = Math.floor((360 - actualDeg) / (360 / prizes.length)) % prizes.length;
+            // Ajuste do cálculo para bater com o ponteiro no topo (270 graus)
+            const prizeIndex = Math.floor(((360 - actualDeg + 270) % 360) / (360 / prizes.length));
             const won = prizes[prizeIndex];
             
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             
             document.getElementById("result").style.display = "block";
-            document.getElementById("prizeTitle").innerText = "Parabéns!";
-            document.getElementById("prizeDesc").innerText = won.name + ": " + won.desc;
+            document.getElementById("prizeTitle").innerText = "PARABÉNS!";
+            document.getElementById("prizeDesc").innerText = "Você ganhou: " + won;
             
-            const waMsg = encodeURIComponent(`Olá! Ganhei o prêmio: [${won.name}] na Roleta Nostálgicas! Por favor, deixe salvo para meu próximo pedido.`);
-            document.getElementById("waLink").href = `https://wa.me/5591984711618text=${waMsg}`; // COLOQUE SEU NUMERO AQUI
-        }, 5000);
+            const waMsg = encodeURIComponent(`Olá! Ganhei o prêmio: [${won}] na Roleta Nostálgicas! Deixe salvo para meu próximo pedido.`);
+            document.getElementById("waLink").href = `https://wa.me/5591984711618?text=${waMsg}`;
+            
+            btn.innerText = "SORTEADO!";
+        }, 5100);
     }
 
-    draw();
+    // Garante que desenha ao carregar
+    window.onload = drawWheel;
 </script>
 
 </body>
