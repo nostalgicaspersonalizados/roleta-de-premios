@@ -1,90 +1,56 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roleta Nostálgicas</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #faedcd; color: #463f3a; padding: 20px; }
-        .wheel-container { position: relative; width: 300px; height: 300px; margin: 20px; }
-        #canvas { width: 300px; height: 300px; border-radius: 50%; border: 5px solid #463f3a; background: white; transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid red; z-index: 10; }
-        button { padding: 15px 30px; font-size: 18px; font-weight: bold; background: #bc6c25; color: white; border: none; border-radius: 25px; cursor: pointer; margin-top: 20px; }
-        #result { display: none; margin-top: 20px; padding: 15px; background: white; border: 2px solid #d4a373; border-radius: 10px; text-align: center; }
-        .wa-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #25d366; color: white; text-decoration: none; border-radius: 5px; }
+        body { background: #faedcd; text-align: center; font-family: sans-serif; }
+        #canvas { background: white; border-radius: 50%; border: 10px solid #463f3a; margin-top: 20px; }
+        .pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid red; margin: 0 auto -20px auto; position: relative; z-index: 5; }
+        button { padding: 15px 30px; font-size: 20px; margin-top: 20px; cursor: pointer; background: #bc6c25; color: white; border: none; border-radius: 10px; }
     </style>
 </head>
 <body>
+    <h1>Roleta Nostálgicas</h1>
+    <div class="pointer"></div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <br>
+    <button onclick="girar()">GIRAR ROLETA</button>
 
-    <h2>Nostálgicas Personalizados</h2>
-    <p>Gire para ganhar um presente!</p>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const premios = ["Cupom Indicação", "15% OFF", "Mini Álbum", "R$ 10 OFF", "Frete Grátis"];
+        const cores = ["#d4a373", "#ccd5ae", "#e9edc9", "#faedcd", "#bc6c25"];
+        let angulo = 0;
 
-    <div class="wheel-container">
-        <div class="pointer"></div>
-        <canvas id="canvas" width="500" height="500"></canvas>
-    </div>
-
-    <button id="spinBtn" onclick="spin()">GIRAR ROLETA</button>
-
-    <div id="result">
-        <h3 id="prizeText"></h3>
-        <a id="waLink" href="#" class="wa-btn" target="_blank">Resgatar no WhatsApp</a>
-    </div>
-
-<script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    const prizes = ["Cupom Indicação", "15% OFF", "Mini Álbum", "R$ 10 OFF", "Frete Grátis"];
-    const colors = ["#d4a373", "#ccd5ae", "#e9edc9", "#faedcd", "#bc6c25"];
-    let currentRotation = 0;
-
-    function draw() {
-        const arc = (2 * Math.PI) / 5;
-        for (let i = 0; i < 5; i++) {
-            ctx.fillStyle = colors[i];
-            ctx.beginPath();
-            ctx.moveTo(250, 250);
-            ctx.arc(250, 250, 250, i * arc, (i + 1) * arc);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.save();
-            ctx.translate(250, 250);
-            ctx.rotate(i * arc + arc / 2);
-            ctx.fillStyle = "#fff";
-            if(i === 3) ctx.fillStyle = "#463f3a"; // Cor escura no fundo claro
-            ctx.font = "bold 25px Arial";
-            ctx.fillText(prizes[i], 100, 10);
-            ctx.restore();
+        function desenhar() {
+            const fatia = (2 * Math.PI) / 5;
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.fillStyle = cores[i];
+                ctx.moveTo(200, 200);
+                ctx.arc(200, 200, 200, i * fatia, (i + 1) * fatia);
+                ctx.fill();
+                ctx.stroke();
+                ctx.save();
+                ctx.translate(200, 200);
+                ctx.rotate(i * fatia + fatia / 2);
+                ctx.fillStyle = "#000";
+                ctx.font = "bold 16px Arial";
+                ctx.fillText(premios[i], 70, 5);
+                ctx.restore();
+            }
         }
-    }
 
-    function spin() {
-        document.getElementById("spinBtn").disabled = true;
-        const extra = Math.floor(Math.random() * 360) + 3600;
-        currentRotation += extra;
-        canvas.style.transform = `rotate(${currentRotation}deg)`;
-
-        setTimeout(() => {
-            const actualDeg = (currentRotation % 360);
-            // Cálculo para alinhar com o ponteiro no topo
-            const prizeIndex = Math.floor(((360 - actualDeg + 270) % 360) / 72);
-            const won = prizes[prizeIndex];
-
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            document.getElementById("result").style.display = "block";
-            document.getElementById("prizeText").innerText = "Ganhou: " + won;
-            
-            const msg = encodeURIComponent(`Ganhei ${won} na Roleta Nostálgicas!`);
-            document.getElementById("waLink").href = `https://wa.me/55SEUNUMERO?text=${msg}`;
-        }, 5000);
-    }
-
-    // Força o desenho inicial
-    draw();
-    // Re-garante o desenho caso o navegador demore
-    setTimeout(draw, 500);
-</script>
+        function girar() {
+            const sorteio = Math.random() * 360 + 2000;
+            angulo += sorteio;
+            canvas.style.transition = "transform 4s cubic-bezier(0.1, 0, 0.2, 1)";
+            canvas.style.transform = `rotate(${angulo}deg)`;
+        }
+        
+        desenhar();
+    </script>
 </body>
 </html>
