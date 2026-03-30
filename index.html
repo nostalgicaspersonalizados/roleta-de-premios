@@ -3,105 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roleta Nostálgicas</title>
+    <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        body { background: #faedcd; text-align: center; font-family: 'Segoe UI', Tahoma, sans-serif; color: #463f3a; padding: 20px; }
-        .box { background: white; max-width: 400px; margin: 0 auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        input { padding: 12px; width: 80%; border: 2px solid #d4a373; border-radius: 8px; font-size: 16px; margin-bottom: 10px; }
-        #canvas { background: white; border-radius: 50%; border: 8px solid #463f3a; transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); margin: 20px 0; }
-        .pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid red; margin: 0 auto -25px auto; position: relative; z-index: 10; }
-        button { padding: 15px 30px; font-size: 18px; font-weight: bold; background: #bc6c25; color: white; border: none; border-radius: 25px; cursor: pointer; }
-        #result { display: none; margin-top: 20px; border-top: 2px dashed #ccc; padding-top: 15px; }
-        .wa-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #25d366; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        :root { --gold: #bc6c25; --cream: #faedcd; --brown: #463f3a; --tan: #d4a373; }
+        body { background: var(--cream); text-align: center; font-family: 'Segoe UI', sans-serif; color: var(--brown); padding: 20px; }
+        .box { background: white; max-width: 450px; margin: 0 auto; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 2px solid var(--tan); }
+        h2 { color: var(--gold); margin-top: 0; font-size: 1.8rem; }
+        label { display: block; text-align: left; margin: 10px 0 5px 30px; font-weight: bold; font-size: 14px; }
+        input { padding: 14px; width: 85%; border: 2px solid var(--tan); border-radius: 12px; font-size: 16px; margin-bottom: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--gold); background: #fffcf5; }
+        .canvas-wrap { position: relative; width: 320px; height: 320px; margin: 25px auto; }
+        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 7px solid var(--brown); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
+        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #e63946; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        .btn-main { padding: 18px; width: 90%; font-size: 18px; font-weight: bold; background: var(--gold); color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 #8a4a16; transition: 0.2s; }
+        .btn-main:active { transform: translateY(3px); box-shadow: 0 1px 0 #8a4a16; }
+        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; animation: fadeInUp 0.6s ease; }
+        .wa-btn { display: inline-block; margin-top: 15px; padding: 15px; background: #25d366; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; width: 85%; font-size: 17px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>Nostálgicas Personalizados</h2>
-    <p>Para começar, digite o número do seu pedido:</p>
+    <h2>Nostálgicas</h2>
+    <p style="margin-bottom: 20px;">Ganhe um presente exclusivo para sua próxima compra!</p>
     
-    <input type="text" id="numPedido" placeholder="Ex: 1234">
-    <br>
+    <div id="formInicial">
+        <label>Número do Pedido Atual:</label>
+        <input type="text" id="numPedido" placeholder="Ex: 1020">
+        
+        <label>Qual presente você quer comprar depois?</label>
+        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Quadro, Álbum...">
+        
+        <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
+    </div>
     
     <div id="areaRoleta" style="display:none;">
-        <div class="pointer"></div>
-        <canvas id="canvas" width="400" height="400" style="max-width: 100%; height: auto;"></canvas>
-        <br>
-        <button id="spinBtn" onclick="girar()">GIRAR ROLETA</button>
+        <div class="canvas-wrap">
+            <div class="pointer"></div>
+            <canvas id="canvas" width="500" height="500"></canvas>
+        </div>
+        <button id="spinBtn" class="btn-main" onclick="girar()">GIRAR AGORA!</button>
     </div>
 
-    <button id="btnValidar" onclick="validarPedido()">LIBERAR ROLETA</button>
-
     <div id="result">
-        <h3 id="prizeText" style="color: #bc6c25;"></h3>
-        <p>Tire um print desta tela ou clique abaixo:</p>
-        <a id="waLink" href="#" class="wa-btn" target="_blank">Enviar prêmio para WhatsApp</a>
+        <h3 id="prizeText" style="color: var(--gold); font-size: 22px; margin: 5px 0;"></h3>
+        <p id="prizeInfo" style="font-size: 15px; color: #555;"></p>
+        <a id="waLink" href="#" class="wa-btn" target="_blank">Resgatar Presente no WhatsApp</a>
+        <p style="font-size: 12px; margin-top: 15px; color: #999;">*Prêmio válido apenas para o próximo pedido.</p>
     </div>
 </div>
 
 <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    const premios = ["Cupom Indicação", "15% de Desconto", "Mini Álbum", "R$ 10 OFF", "Frete Grátis"];
-    const cores = ["#d4a373", "#ccd5ae", "#e9edc9", "#faedcd", "#bc6c25"];
-    let anguloAtual = 0;
+    
+    // PROBABILIDADES CALIBRADAS
+    const premiosData = [
+        { name: "Cupom Indicação", chance: 45, color: "#d4a373", desc: "Ganhe 10% e dê 10% para um amigo!" },
+        { name: "15% de Desconto", chance: 30, color: "#ccd5ae", desc: "Desconto especial para você usar!" },
+        { name: "R$ 10 OFF",       chance: 18, color: "#faedcd", desc: "Desconto fixo no valor total." },
+        { name: "Mini Álbum",      chance: 5,  color: "#bc6c25", desc: "Um Chuveirinho de 10 fotos de presente!" },
+        { name: "Frete Grátis",    chance: 2,  color: "#e9edc9", desc: "Sua próxima entrega é por nossa conta!" }
+    ];
 
-    function desenhar() {
+    const premios = premiosData.map(p => p.name);
+    const cores = premiosData.map(p => p.color);
+    let anguloTotal = 0;
+
+    function draw() {
         const fatia = (2 * Math.PI) / 5;
         for (let i = 0; i < 5; i++) {
+            ctx.save();
             ctx.beginPath();
             ctx.fillStyle = cores[i];
-            ctx.moveTo(200, 200);
-            ctx.arc(200, 200, 200, i * fatia, (i + 1) * fatia);
+            ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 250, i * fatia, (i + 1) * fatia);
             ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#463f3a";
             ctx.stroke();
-            ctx.save();
-            ctx.translate(200, 200);
+
+            ctx.translate(250, 250);
             ctx.rotate(i * fatia + fatia / 2);
             ctx.fillStyle = "#463f3a";
-            ctx.font = "bold 16px Arial";
             ctx.textAlign = "right";
-            ctx.fillText(premios[i], 180, 5);
+            ctx.font = "bold 22px Arial";
+            ctx.fillText(premios[i], 235, 8);
             ctx.restore();
         }
     }
 
-    function validarPedido() {
+    function validarForm() {
         const pedido = document.getElementById("numPedido").value;
-        if (pedido.length < 2) {
-            alert("Por favor, digite um número de pedido válido.");
+        const desejo = document.getElementById("proximoDesejo").value;
+        
+        if (pedido.length < 2 || desejo.length < 3) {
+            alert("Por favor, preencha o número do pedido e o seu desejo para continuar!");
             return;
         }
+        
+        document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
-        document.getElementById("btnValidar").style.display = "none";
-        document.getElementById("numPedido").disabled = true;
-        desenhar();
+        draw();
     }
 
     function girar() {
-        document.getElementById("spinBtn").disabled = true;
-        const sorteio = Math.floor(Math.random() * 360) + 1800; // Mínimo 5 voltas
-        anguloAtual += sorteio;
+        const btn = document.getElementById("spinBtn");
+        btn.disabled = true;
+        btn.innerText = "SORTEANDO...";
+
+        const random = Math.random() * 100;
+        let acumulado = 0;
+        let sorteadoIndex = 0;
+
+        for (let i = 0; i < premiosData.length; i++) {
+            acumulado += premiosData[i].chance;
+            if (random <= acumulado) { sorteadoIndex = i; break; }
+        }
+
+        const grausFatia = 360 / 5;
+        const anguloAlvo = 360 - (sorteadoIndex * grausFatia) - (grausFatia / 2);
+        anguloTotal += 2880 + anguloAlvo; 
         
-        canvas.style.transform = `rotate(${anguloAtual}deg)`;
+        canvas.style.transform = `rotate(${anguloTotal}deg)`;
 
         setTimeout(() => {
-            const finalDeg = (anguloAtual % 360);
-            // Ajuste para o ponteiro no topo
-            const prizeIndex = Math.floor(((360 - finalDeg + 270) % 360) / 72);
-            const ganhou = premios[prizeIndex];
-            const nPedido = document.getElementById("numPedido").value;
+            const ganhou = premiosData[sorteadoIndex];
+            const pedido = document.getElementById("numPedido").value;
+            const desejo = document.getElementById("proximoDesejo").value;
 
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
             document.getElementById("result").style.display = "block";
-            document.getElementById("prizeText").innerText = "PARABÉNS! VOCÊ GANHOU: " + ganhou;
+            document.getElementById("prizeText").innerText = "VOCÊ GANHOU: " + ganhou.name;
+            document.getElementById("prizeInfo").innerText = ganhou.desc;
             
-            const msg = encodeURIComponent(`Olá! Ganhei ${ganhou} na roleta! Meu pedido é o #${nPedido}. Deixe salvo para minha próxima compra!`);
-            document.getElementById("waLink").href = `https://wa.me/5591984711618?text=${msg}`;
-        }, 4000);
+            // SUBSTITUA PELO SEU NÚMERO (COM DDD)
+            const whatsapp = "5500000000000"; 
+            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas! \n\nPedido Atual: #${pedido} \nMeu Próximo Desejo: ${desejo} \n\nDeixe salvo para minha próxima compra!`);
+            document.getElementById("waLink").href = `https://wa.me/${whatsapp}?text=${texto}`;
+            
+            btn.innerText = "GIRO REALIZADO!";
+        }, 5100);
     }
 </script>
 </body>
