@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Roleta Nostálgicas</title>
+    <style>
+        body { background: #faedcd; text-align: center; font-family: sans-serif; }
+        #canvas { background: white; border-radius: 50%; border: 10px solid #463f3a; margin-top: 20px; }
+        .pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid red; margin: 0 auto -20px auto; position: relative; z-index: 5; }
+        button { padding: 15px 30px; font-size: 20px; margin-top: 20px; cursor: pointer; background: #bc6c25; color: white; border: none; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Roleta Nostálgicas</h1>
+    <div class="pointer"></div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <br>
+    <button onclick="girar()">GIRAR ROLETA</button>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const premios = ["Cupom Indicação", "15% OFF", "Mini Álbum", "R$ 10 OFF", "Frete Grátis"];
+        const cores = ["#d4a373", "#ccd5ae", "#e9edc9", "#faedcd", "#bc6c25"];
+        let angulo = 0;
+
+        function desenhar() {
+            const fatia = (2 * Math.PI) / 5;
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.fillStyle = cores[i];
+                ctx.moveTo(200, 200);
+                ctx.arc(200, 200, 200, i * fatia, (i + 1) * fatia);
+                ctx.fill();
+                ctx.stroke();
+                ctx.save();
+                ctx.translate(200, 200);
+                ctx.rotate(i * fatia + fatia / 2);
+                ctx.fillStyle = "#000";
+                ctx.font = "bold 16px Arial";
+                ctx.fillText(premios[i], 70, 5);
+                ctx.restore();
+            }
+        }
+
+        function girar() {
+            const sorteio = Math.random() * 360 + 2000;
+            angulo += sorteio;
+            canvas.style.transition = "transform 4s cubic-bezier(0.1, 0, 0.2, 1)";
+            canvas.style.transform = `rotate(${angulo}deg)`;
+        }
+        
+        desenhar();
+    </script>
+</body>
+</html>
