@@ -168,3 +168,17 @@
 
         setTimeout(() => {
             const ganhou = premiosData[sorteadoIndex];
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            document.getElementById("result").style.display = "block";
+            document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
+            document.getElementById("prizeInfo").innerText = ganhou.desc;
+            
+            const whatsapp = "559184711618"; 
+            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido: #${document.getElementById("numPedido").value}\nDesejo: ${document.getElementById("proximoDesejo").value}`);
+            document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
+            btn.innerText = "SORTEIO REALIZADO!";
+        }, 5100);
+    }
+</script>
+</body>
+</html>
