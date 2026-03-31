@@ -123,4 +123,15 @@
             document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
             document.getElementById("prizeInfo").innerText = ganhou.desc;
             
-            // NÚMERO CORRIGIDO PARA O FORMATO API WHATSAPP (91 + 8 dígitos
+            // NÚMERO CORRIGIDO PARA O FORMATO API WHATSAPP (91 + 8 dígitos)
+            const whatsapp = "559184711618"; 
+            
+            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido Atual: #${pedido}\nPróximo Desejo: ${desejo}\n\nDeixe reservado para minha próxima compra!`);
+            
+            document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
+            btn.innerText = "GIRO CONCLUÍDO!";
+        }, 5100);
+    }
+</script>
+</body>
+</html>
