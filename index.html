@@ -11,32 +11,25 @@
         .box { background: white; max-width: 450px; margin: 0 auto; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 2px solid var(--tan); }
         h2 { color: var(--gold); margin-top: 0; font-size: 1.8rem; }
         label { display: block; text-align: left; margin: 10px 0 5px 30px; font-weight: bold; font-size: 14px; }
-        input { padding: 14px; width: 85%; border: 2px solid var(--tan); border-radius: 12px; font-size: 16px; margin-bottom: 15px; outline: none; transition: 0.3s; box-sizing: border-box; }
-        input:focus { border-color: var(--gold); background: #fffcf5; }
+        input { padding: 14px; width: 85%; border: 2px solid var(--tan); border-radius: 12px; font-size: 16px; margin-bottom: 15px; outline: none; box-sizing: border-box; }
         .canvas-wrap { position: relative; width: 320px; height: 320px; margin: 25px auto; }
         #canvas { width: 100%; height: 100%; border-radius: 50%; border: 7px solid var(--brown); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
         .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #e63946; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
         .btn-main { padding: 18px; width: 90%; font-size: 18px; font-weight: bold; background: var(--gold); color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 #8a4a16; transition: 0.2s; }
-        .btn-main:active { transform: translateY(3px); box-shadow: 0 1px 0 #8a4a16; }
         .btn-main:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; animation: fadeInUp 0.6s ease; }
-        .wa-btn { display: inline-block; margin-top: 15px; padding: 15px; background: #25d366; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; width: 85%; font-size: 17px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; }
+        .wa-btn { display: inline-block; margin-top: 15px; padding: 15px; background: #25d366; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; width: 85%; font-size: 17px; }
     </style>
 </head>
 <body>
 
 <div class="box">
     <h2>Nostálgicas</h2>
-    <p style="margin-bottom: 20px;">Ganhe um presente exclusivo para sua próxima compra!</p>
-    
     <div id="formInicial">
         <label>Número do Pedido Atual:</label>
         <input type="text" id="numPedido" placeholder="Ex: 1020">
-        
         <label>Qual presente você quer comprar depois?</label>
         <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Quadro, Álbum...">
-        
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
     
@@ -59,7 +52,6 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     
-    // CONFIGURAÇÃO DE PROBABILIDADES
     const premiosData = [
         { name: "Cupom Indicação", chance: 45, color: "#d4a373", desc: "Ganhe 10% e dê 10% para um amigo!" },
         { name: "15% de Desconto", chance: 30, color: "#ccd5ae", desc: "Desconto especial para você usar!" },
@@ -74,34 +66,28 @@
 
     function draw() {
         const fatia = (2 * Math.PI) / 5;
+        ctx.clearRect(0, 0, 500, 500);
         for (let i = 0; i < 5; i++) {
             ctx.save();
             ctx.beginPath();
             ctx.fillStyle = cores[i];
             ctx.moveTo(250, 250);
-            ctx.arc(250, 250, 250, i * fatia, (i + 1) * fatia);
+            ctx.arc(250, 250, 250, i * fatia - Math.PI/2, (i + 1) * fatia - Math.PI/2);
             ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "#463f3a";
             ctx.stroke();
 
             ctx.translate(250, 250);
-            ctx.rotate(i * fatia + fatia / 2);
+            ctx.rotate(i * fatia); 
             ctx.fillStyle = "#463f3a";
             ctx.textAlign = "right";
             ctx.font = "bold 22px Arial";
-            ctx.fillText(premios[i], 235, 8);
+            ctx.fillText(premios[i], 230, 10);
             ctx.restore();
         }
     }
 
     function validarForm() {
-        const pedido = document.getElementById("numPedido").value;
-        const desejo = document.getElementById("proximoDesejo").value;
-        if (pedido.length < 2 || desejo.length < 3) {
-            alert("Preencha o pedido e o seu desejo para girar!");
-            return;
-        }
+        if (document.getElementById("numPedido").value.length < 2) return alert("Preencha os campos!");
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -110,9 +96,7 @@
     function girar() {
         const btn = document.getElementById("spinBtn");
         btn.disabled = true;
-        btn.innerText = "SORTEANDO...";
 
-        // 1. SORTEIO PONDERADO
         const random = Math.random() * 100;
         let acumulado = 0;
         let sorteadoIndex = 0;
@@ -121,34 +105,29 @@
             if (random <= acumulado) { sorteadoIndex = i; break; }
         }
 
-        // 2. CÁLCULO DE COMPENSAÇÃO (O PULO DO GATO)
-        const grausFatia = 360 / 5; 
-        // Compensamos 270 deg (ponteiro no topo) e centralizamos na fatia
-        const anguloAlvo = 360 - (sorteadoIndex * grausFatia) - (grausFatia / 2) + 270;
-        
-        // Adicionamos 8 voltas e o ângulo do prêmio
-        const giroFinal = 2880 + (anguloAlvo % 360);
+        const grausFatia = 360 / 5;
+        // Compensação matemática para o giro horário e ponteiro no topo
+        const anguloSorteado = 360 - (sorteadoIndex * grausFatia);
+        const giroFinal = 2880 + anguloSorteado - (grausFatia / 2);
         anguloAcumulado += giroFinal;
         
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
 
-        // 3. RESULTADO
         setTimeout(() => {
             const ganhou = premiosData[sorteadoIndex];
             const pedido = document.getElementById("numPedido").value;
             const desejo = document.getElementById("proximoDesejo").value;
-
+            
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-
             document.getElementById("result").style.display = "block";
             document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
             document.getElementById("prizeInfo").innerText = ganhou.desc;
             
-            // INSIRA SEU WHATSAPP AQUI
+            // NÚMERO JÁ CONFIGURADO
             const whatsapp = "5591984711618"; 
             const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido Atual: #${pedido}\nPróximo Desejo: ${desejo}\n\nDeixe reservado para minha próxima compra!`);
-            document.getElementById("waLink").href = `https://wa.me/${whatsapp}?text=${texto}`;
             
+            document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
             btn.innerText = "GIRO REALIZADO!";
         }, 5100);
     }
