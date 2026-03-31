@@ -6,60 +6,81 @@
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
+        /* ==========================================================
+           PASSO 1: SUAS CORES DA LOJA (Mude os códigos hexadecimais #)
+           ========================================================== */
         :root { 
-            --gold: #b07d62;    /* Tom terroso elegante */
-            --cream: #fdfaf7;   /* Fundo off-white clean */
-            --brown: #4a3f35;   /* Texto café escuro */
-            --tan: #d6ccc2;     /* Bordas suaves */
-            --accent: #bc6c25;  /* Destaque artesanal */
+            --cor-principal: #bc6c25;  /* Cor dos botões e destaques (ex: Terracota) */
+            --cor-secundaria: #b07d62; /* Cor dos textos secundários (ex: Marrom Suave) */
+            --cor-fundo: #fdfaf7;      /* Cor de fundo da página (ex: Off-White/Creme) */
+            --cor-texto: #4a3f35;      /* Cor do texto principal (ex: Café Escuro) */
+            --cor-borda: #d6ccc2;      /* Cor das bordas suaves (ex: Bege) */
         }
+
         body { 
-            background: var(--cream); 
-            background-image: radial-gradient(var(--tan) 0.5px, transparent 0.5px);
+            background-color: var(--cor-fundo); 
+            /* Efeito de fundo pontilhado suave (estilo Bullet Journal) */
+            background-image: radial-gradient(var(--cor-borda) 0.5px, transparent 0.5px);
             background-size: 20px 20px; 
             text-align: center; 
             font-family: 'Segoe UI', Roboto, sans-serif; 
-            color: var(--brown); 
+            color: var(--cor-texto); 
             padding: 20px; 
             margin: 0;
         }
+
         .box { 
             background: white; 
             max-width: 420px; 
             margin: 20px auto; 
-            padding: 40px 20px; 
+            padding: 30px 20px 40px 20px; 
             border-radius: 30px; 
             box-shadow: 0 15px 35px rgba(74,63,53,0.08); 
-            border: 1px solid var(--tan); 
+            border: 1px solid var(--cor-borda); 
+            position: relative;
         }
-        h2 { color: var(--accent); font-size: 2rem; margin-bottom: 5px; letter-spacing: -1px; }
-        .subtitle { font-size: 13px; color: var(--gold); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-        label { display: block; text-align: left; margin: 15px 0 5px 35px; font-weight: 600; font-size: 12px; color: var(--brown); }
+
+        /* Estilo da Logo */
+        .logo-container { margin-bottom: 20px; text-align: center; }
+        .logo-container img { max-width: 150px; height: auto; object-fit: contain; }
+
+        h2 { color: var(--cor-principal); font-size: 1.8rem; margin: 0 0 5px 0; letter-spacing: -1px; }
+        .subtitle { font-size: 12px; color: var(--cor-secundaria); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        
+        label { display: block; text-align: left; margin: 15px 0 5px 35px; font-weight: 600; font-size: 12px; color: var(--cor-texto); }
         input { 
-            padding: 15px; width: 85%; border: 1.5px solid var(--tan); border-radius: 15px; 
+            padding: 15px; width: 85%; border: 1.5px solid var(--cor-borda); border-radius: 15px; 
             font-size: 16px; margin-bottom: 10px; outline: none; transition: 0.3s; box-sizing: border-box;
+            background-color: #fff;
         }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(188,108,37,0.1); }
+        input:focus { border-color: var(--cor-principal); box-shadow: 0 0 0 3px rgba(188,108,37,0.1); }
+        
         .btn-main { 
-            padding: 18px; width: 90%; font-size: 17px; font-weight: bold; background: var(--accent); 
+            padding: 18px; width: 90%; font-size: 17px; font-weight: bold; background: var(--cor-principal); 
             color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; margin-top: 15px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(188,108,37,0.2); }
         .btn-main:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
         /* Estilo da Roleta */
         .canvas-wrap { position: relative; width: 320px; height: 320px; margin: 30px auto; }
-        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--brown); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
-        .pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #e63946; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--cor-texto); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #e63946; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
         
-        #result { display: none; margin-top: 25px; border-top: 2px dashed var(--tan); padding-top: 20px; animation: fadeInUp 0.6s ease; }
-        .wa-btn { display: inline-block; margin-top: 15px; padding: 16px; background: #25d366; color: white; text-decoration: none; border-radius: 15px; font-weight: bold; width: 85%; font-size: 16px; }
+        #result { display: none; margin-top: 25px; border-top: 2px dashed var(--cor-borda); padding-top: 20px; animation: fadeInUp 0.6s ease; }
+        .wa-btn { display: inline-block; margin-top: 15px; padding: 16px; background: #25d366; color: white; text-decoration: none; border-radius: 15px; font-weight: bold; width: 85%; font-size: 16px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .wa-btn:hover { background: #1da851; transform: translateY(-2px); }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="box">
+    <div class="logo-container">
+        <img src="COLE_AQUI_O_LINK_DA_SUA_LOGO.png" alt="Logo Nostálgicas Personalizados">
+    </div>
+    
     <h2>Nostálgicas</h2>
     <p class="subtitle">Presentes com Memória</p>
 
@@ -80,13 +101,14 @@
     </div>
 
     <div id="result">
-        <h3 id="prizeText" style="color: var(--accent); font-size: 24px; margin: 5px 0;"></h3>
+        <h3 id="prizeText" style="color: var(--cor-principal); font-size: 24px; margin: 5px 0;"></h3>
         <p id="prizeInfo" style="font-size: 15px; color: #666; margin-bottom: 20px;"></p>
         <a id="waLink" href="#" class="wa-btn" target="_blank">RESGATAR NO WHATSAPP</a>
     </div>
 </div>
 
 <script>
+    // Configurações Técnicas (Mantidas)
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     
@@ -153,7 +175,7 @@
         anguloAcumulado += giroFinal;
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
 
-        // --- SEU NOVO LINK DO GOOGLE ---
+        // --- SEU LINK DO GOOGLE (MANTIDO) ---
         const urlPlanilha = "https://script.google.com/macros/s/AKfycbw6Btaxwl4P257YG-_0mGOsSeUNVDGz6NfXRgvD-Jfk-CBE7ikRwIhWMdO-BbdoMyp1Rg/exec";
         
         fetch(urlPlanilha, {
