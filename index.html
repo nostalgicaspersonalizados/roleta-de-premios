@@ -60,7 +60,7 @@
 
 <div class="box">
     <div class="logo-container"><img src="NOSTÁLGICAS (1).png" alt="Logo Nostálgicas"></div>
-    <p class="subtitle">Arte, Lembranças e Amor</p>
+    <p class="subtitle">Arte, Lembranças e amor</p>
 
     <div id="formInicial">
         <label>COMO PODEMOS TE CHAMAR?</label>
@@ -101,13 +101,13 @@
 <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwE_tE3kWqeqbcxCayZ-es9uekROLlP27UeiYNH_39thbc3cjeLGUFrJm74CslsICGuCw/exec';
+    const const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
 
     const premiosData = [
-        { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Após seu amigo indicado efetuar o primeiro pedido já com desconto você ganhe 10% de desconto no próximo pedido!" },
+        { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
         { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra na Nostálgicas!" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", icone: "💰", desc: "Desconto de R$10 no total do seu  próximo pedido." },
-        { name: "Mini Álbum",      chance: 5,  color: "#300870", icone: "📸", desc: " No próximo pedido garanta um brinde especial para suas memórias!" },
+        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", icone: "💰", desc: "Desconto de R$10 no total do seu pedido." },
+        { name: "Mini Álbum",      chance: 5,  color: "#300870", icone: "📸", desc: "Um brinde especial para suas memórias!" },
         { name: "Frete Grátis",    chance: 2,  color: "#fefefe", icone: "🚚", desc: "Sua próxima entrega é por nossa conta!" }
     ];
 
@@ -116,7 +116,7 @@
     let dadosGanhador = {};
 
     window.onload = function() {
-        const travaReal = localStorage.getItem("nostalgicas_v12_fix");
+        const travaReal = localStorage.getItem("nostalgicas_v12_final");
         if (travaReal) {
             dadosGanhador = JSON.parse(travaReal);
             exibirResultado();
@@ -132,116 +132,4 @@
             ctx.fill(); ctx.stroke(); ctx.restore();
             ctx.save(); ctx.translate(250, 250); ctx.rotate(i * fatia + fatia / 2 - Math.PI / 2);
             ctx.fillStyle = (i === 1 || i === 3) ? "#fff" : "#300870"; 
-            ctx.textAlign = "right"; ctx.font = "bold 22px Arial"; ctx.fillText(premiosData[i].name, 230, 8); ctx.restore();
-        }
-    }
-
-    function validarForm() {
-        if (document.getElementById("nomeCliente").value.length < 2) { alert("Digite seu nome!"); return; }
-        if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos LGPD."); return; }
-        document.getElementById("formInicial").style.display = "none";
-        document.getElementById("areaRoleta").style.display = "block";
-        draw();
-    }
-
-    function girar() {
-        document.getElementById("spinBtn").disabled = true;
-        const random = Math.random() * 100;
-        let acumulado = 0; let sorteadoIndex = 0;
-        for (let i = 0; i < premiosData.length; i++) {
-            acumulado += premiosData[i].chance;
-            if (random <= acumulado) { sorteadoIndex = i; break; }
-        }
-        anguloAcumulado += (3600 + (360 - (sorteadoIndex * 72)) - 36);
-        canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
-
-        // Grava os dados base (sem o nome do amigo ainda)
-        dadosGanhador = {
-            nome: document.getElementById("nomeCliente").value,
-            pedido: document.getElementById("numPedido").value,
-            desejo: document.getElementById("proximoDesejo").value,
-            premio: premiosData[sorteadoIndex].name,
-            desc: premiosData[sorteadoIndex].desc,
-            icone: premiosData[sorteadoIndex].icone
-        };
-
-        localStorage.setItem("nostalgicas_v12_fix", JSON.stringify(dadosGanhador));
-
-        setTimeout(() => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
-            exibirResultado();
-            // Envia para a planilha imediatamente (se não for indicação, já vai certo)
-            if (dadosGanhador.premio !== "Cupom Indicação") {
-                enviarDadosPlanilha(dadosGanhador);
-            }
-        }, 5100);
-    }
-
-    function enviarDadosPlanilha(dados) {
-        // Se for indicação, junta o nome do amigo no campo prêmio antes de enviar
-        let dadosParaEnviar = {...dados};
-        const nomeAmigoInput = document.getElementById("nomeAmigo").value;
-        if (dadosParaEnviar.premio === "Cupom Indicação" && nomeAmigoInput) {
-            dadosParaEnviar.premio = "Cupom Indicação - Amigo: " + nomeAmigoInput;
-        }
-
-        fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(dadosParaEnviar)
-        }).catch(e => console.log(e));
-    }
-
-    function exibirResultado() {
-        document.getElementById("formInicial").style.display = "none";
-        document.getElementById("areaRoleta").style.display = "none";
-        document.getElementById("result").style.display = "block";
-        document.getElementById("prizeText").innerText = dadosGanhador.premio;
-        document.getElementById("prizeInfo").innerText = dadosGanhador.desc;
-        document.getElementById("premioIcone").innerText = dadosGanhador.icone;
-        if (dadosGanhador.premio === "Cupom Indicação") {
-            document.getElementById("campoIndicado").style.display = "block";
-        }
-        atualizarLinkFinal();
-    }
-
-    function atualizarLinkFinal() {
-        const amigo = document.getElementById("nomeAmigo").value || "______";
-        const btn = document.getElementById("waLinkFinal");
-        
-        if (passoGlobal === 1) {
-            let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio}!\n\n📌 *DADOS*:\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
-            if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Amigo Indicado: ${amigo}`;
-            btn.href = `https://api.whatsapp.com/send?phone=5591984711618&text=${encodeURIComponent(texto)}`;
-        } else {
-            let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁 Acesse o link e garanta já o seu produto com desconto\n\nInstagram: https://www.instagram.com/nostalgicas.personalizados/`;
-            btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoAmigo)}`;
-        }
-    }
-
-    function verificarAcao(e) {
-        if (dadosGanhador.premio === "Cupom Indicação") {
-            const nomeAmigoVal = document.getElementById("nomeAmigo").value;
-            if (!nomeAmigoVal) {
-                alert("Por favor, digite o nome do seu amigo(a)!");
-                return false;
-            }
-            // Envia para a planilha com o nome do amigo agora que ele preencheu
-            enviarDadosPlanilha(dadosGanhador);
-        }
-        
-        if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
-            setTimeout(() => {
-                passoGlobal = 2;
-                const btn = document.getElementById("waLinkFinal");
-                btn.innerText = "2º PASSO: ENVIAR PARA O AMIGO";
-                btn.style.background = "#007bff";
-                atualizarLinkFinal();
-            }, 1000);
-        }
-        return true;
-    }
-</script>
-</body>
-</html>
+            ctx.textAlign = "right"; ctx.font =
