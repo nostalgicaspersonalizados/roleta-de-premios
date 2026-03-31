@@ -101,17 +101,28 @@
 <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
+    
+    // TEXTOS DOS PREMIOS RESTAURADOS CONFORME SUA EDIÇÃO
     const premiosData = [
         { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
-        { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra!" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", icone: "💰", desc: "Desconto de R$10 no pedido." },
-        { name: "Mini Álbum",      chance: 5,  color: "#300870", icone: "📸", desc: "Um brinde especial para você!" },
-        { name: "Frete Grátis",    chance: 2,  color: "#fefefe", icone: "🚚", desc: "Próxima entrega por nossa conta!" }
+        { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra na Nostálgicas!" },
+        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", icone: "💰", desc: "Desconto de R$10 no total do seu pedido." },
+        { name: "Mini Álbum",      chance: 5,  color: "#300870", icone: "📸", desc: "Um brinde especial para suas memórias!" },
+        { name: "Frete Grátis",    chance: 2,  color: "#fefefe", icone: "🚚", desc: "Sua próxima entrega é por nossa conta!" }
     ];
 
     let anguloAcumulado = 0;
     let passoGlobal = 1;
     let dadosGanhador = {};
+
+    // TRAVA DE SEGURANÇA: Verifica se já girou ao abrir a página
+    window.onload = function() {
+        const salvo = localStorage.getItem("nostalgicas_vFinal_v9");
+        if (salvo) { 
+            dadosGanhador = JSON.parse(salvo);
+            exibirResultado(); 
+        }
+    };
 
     function draw() {
         const fatia = (2 * Math.PI) / 5;
@@ -135,13 +146,16 @@
     }
 
     function girar() {
+        // TRAVA DE BOTÃO: Impede cliques múltiplos
         document.getElementById("spinBtn").disabled = true;
+        
         const random = Math.random() * 100;
         let acumulado = 0; let sorteadoIndex = 0;
         for (let i = 0; i < premiosData.length; i++) {
             acumulado += premiosData[i].chance;
             if (random <= acumulado) { sorteadoIndex = i; break; }
         }
+        
         anguloAcumulado += (3600 + (360 - (sorteadoIndex * 72)) - 36);
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
 
@@ -154,6 +168,9 @@
             icone: premiosData[sorteadoIndex].icone
         };
 
+        // SALVA NA TRAVA DE SEGURANÇA
+        localStorage.setItem("nostalgicas_vFinal_v9", JSON.stringify(dadosGanhador));
+
         setTimeout(() => {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             exibirResultado();
@@ -161,6 +178,7 @@
     }
 
     function exibirResultado() {
+        document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "none";
         document.getElementById("result").style.display = "block";
         document.getElementById("prizeText").innerText = dadosGanhador.premio;
@@ -178,7 +196,6 @@
             let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio} na roleta!\n\n📌 *DADOS DO SORTEIO*:\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
             if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Indicação para: ${amigo}`;
             
-            // NÚMERO CORRIGIDO: 91984711618
             btn.href = `https://api.whatsapp.com/send?phone=5591984711618&text=${encodeURIComponent(texto)}`;
         } else {
             let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nVeja o Instagram deles aqui: https://www.instagram.com/nostalgicas.personalizados/`;
