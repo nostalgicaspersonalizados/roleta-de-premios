@@ -17,9 +17,8 @@
         .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #e63946; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
         .btn-main { padding: 18px; width: 90%; font-size: 18px; font-weight: bold; background: var(--gold); color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 #8a4a16; transition: 0.2s; }
         .btn-main:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; animation: fadeInUp 0.6s ease; }
+        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; }
         .wa-btn { display: inline-block; margin-top: 15px; padding: 15px; background: #25d366; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; width: 85%; font-size: 17px; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -27,10 +26,10 @@
 <div class="box">
     <h2>Nostálgicas</h2>
     <div id="formInicial">
-        <label>Número do Pedido Atual:</label>
+        <label>Número do Pedido:</label>
         <input type="text" id="numPedido" placeholder="Ex: 1020">
-        <label>Qual presente você quer comprar depois?</label>
-        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Quadro, Álbum...">
+        <label>Seu próximo desejo na loja:</label>
+        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Álbum...">
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
     
@@ -61,40 +60,44 @@
         { name: "Frete Grátis",    chance: 2,  color: "#e9edc9", desc: "Sua próxima entrega é por nossa conta!" }
     ];
 
-    const premios = premiosData.map(p => p.name);
-    const cores = premiosData.map(p => p.color);
     let anguloAcumulado = 0;
 
     function draw() {
         const fatia = (2 * Math.PI) / 5;
         ctx.clearRect(0, 0, 500, 500);
+        
         for (let i = 0; i < 5; i++) {
+            // Desenhar Fatia
             ctx.save();
             ctx.beginPath();
-            ctx.fillStyle = cores[i];
+            ctx.fillStyle = premiosData[i].color;
             ctx.moveTo(250, 250);
             ctx.arc(250, 250, 250, i * fatia - Math.PI/2, (i + 1) * fatia - Math.PI/2);
             ctx.fill();
+            ctx.strokeStyle = "#463f3a";
+            ctx.lineWidth = 2;
             ctx.stroke();
+            ctx.restore();
 
+            // Desenhar Texto
+            ctx.save();
             ctx.translate(250, 250);
-            ctx.rotate(i * fatia); 
+            ctx.rotate(i * fatia); // Alinhado com o início da fatia
+            ctx.rotate(fatia / 2); // Rotaciona para o meio da fatia
+            ctx.rotate(-Math.PI / 2); // Ajuste para o topo (12h)
+            
             ctx.fillStyle = "#463f3a";
             ctx.textAlign = "right";
-            ctx.font = "bold 22px Arial";
-            ctx.fillText(premios[i], 230, 10);
+            ctx.font = "bold 20px Arial";
+            ctx.fillText(premiosData[i].name, 230, 8);
             ctx.restore();
         }
     }
-function validarForm() {
+
+    function validarForm() {
         const pedido = document.getElementById("numPedido").value;
         const desejo = document.getElementById("proximoDesejo").value;
-        
-        if (pedido.length < 1 || desejo.length < 2) {
-            alert("Por favor, preencha o número do pedido e o seu desejo!");
-            return;
-        }
-        
+        if (pedido.length < 1 || desejo.length < 2) return alert("Preencha todos os campos!");
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -121,19 +124,13 @@ function validarForm() {
 
         setTimeout(() => {
             const ganhou = premiosData[sorteadoIndex];
-            const pedido = document.getElementById("numPedido").value;
-            const desejo = document.getElementById("proximoDesejo").value;
-            
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             document.getElementById("result").style.display = "block";
             document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
             document.getElementById("prizeInfo").innerText = ganhou.desc;
             
-            // NÚMERO CORRIGIDO PARA O FORMATO API WHATSAPP (91 + 8 dígitos)
             const whatsapp = "559184711618"; 
-            
-            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido Atual: #${pedido}\nPróximo Desejo: ${desejo}\n\nDeixe reservado para minha próxima compra!`);
-            
+            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido: #${document.getElementById("numPedido").value}\nDesejo: ${document.getElementById("proximoDesejo").value}`);
             document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
             btn.innerText = "GIRO CONCLUÍDO!";
         }, 5100);
