@@ -94,17 +94,11 @@
             </div>
         </div>
         <a id="waLinkFinal" href="#" class="wa-btn" target="_blank" onclick="return verificarAcao(event)">1º PASSO: VALIDAR NO WHATSAPP</a>
-        <p id="instrucaoPasso" style="font-size: 11px; font-weight: 600; margin-top: 15px; color: var(--azul-escuro);">Você precisa nos avisar para validarmos o prêmio.</p>
     </div>
 </div>
 
 <script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    
-    // SEU LINK DO GOOGLE ATUALIZADO
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
-
     const premiosData = [
         { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
         { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra na Nostálgicas!" },
@@ -117,7 +111,18 @@
     let passoGlobal = 1;
     let dadosGanhador = {};
 
+    // TRAVA DE SEGURANÇA: Se já jogou, pula pro resultado
+    window.onload = function() {
+        const jaJogou = localStorage.getItem("nostalgicas_v2026");
+        if (jaJogou) {
+            dadosGanhador = JSON.parse(jaJogou);
+            exibirResultado();
+        }
+    };
+
     function draw() {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
         const fatia = (2 * Math.PI) / 5;
         ctx.clearRect(0, 0, 500, 500);
         for (let i = 0; i < 5; i++) {
@@ -131,10 +136,8 @@
     }
 
     function validarForm() {
-        const nome = document.getElementById("nomeCliente").value;
-        if (nome.length < 2) { alert("Digite seu nome!"); return; }
+        if (document.getElementById("nomeCliente").value.length < 2) { alert("Digite seu nome!"); return; }
         if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos LGPD."); return; }
-        
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -149,7 +152,7 @@
             if (random <= acumulado) { sorteadoIndex = i; break; }
         }
         anguloAcumulado += (3600 + (360 - (sorteadoIndex * 72)) - 36);
-        canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
+        document.getElementById("canvas").style.transform = `rotate(${anguloAcumulado}deg)`;
 
         dadosGanhador = {
             nome: document.getElementById("nomeCliente").value,
@@ -158,48 +161,40 @@
             premio: premiosData[sorteadoIndex].name,
             desc: premiosData[sorteadoIndex].desc,
             icone: premiosData[sorteadoIndex].icone,
-            amigo: "" 
+            amigo: ""
         };
+
+        // SALVA O RESULTADO PARA BLOQUEAR O RE-GIRO
+        localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
 
         setTimeout(() => {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             exibirResultado();
-            
-            // Se NÃO for indicação, já envia logo.
-            if (dadosGanhador.premio !== "Cupom Indicação") {
-                enviarDadosPlanilha(dadosGanhador);
-            }
+            if (dadosGanhador.premio !== "Cupom Indicação") enviarDadosPlanilha(dadosGanhador);
         }, 5100);
     }
 
     function enviarDadosPlanilha(dados) {
-        // Criar uma cópia para enviar
-        let dadosParaEnviar = JSON.parse(JSON.stringify(dados));
-        
-        // Verifica se o campo existe antes de ler
+        let paraPlanilha = {...dados};
         const campoAmigo = document.getElementById("nomeAmigo");
-        if (campoAmigo) {
-            dadosParaEnviar.amigo = campoAmigo.value;
-        }
+        if (campoAmigo) paraPlanilha.amigo = campoAmigo.value;
 
         fetch(scriptURL, {
             method: 'POST',
             mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(dadosParaEnviar)
-        }).catch(err => console.log("Erro de rede:", err));
+            body: JSON.stringify(paraPlanilha)
+        });
     }
 
     function exibirResultado() {
+        document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "none";
         document.getElementById("result").style.display = "block";
         document.getElementById("prizeText").innerText = dadosGanhador.premio;
         document.getElementById("prizeInfo").innerText = dadosGanhador.desc;
         document.getElementById("premioIcone").innerText = dadosGanhador.icone;
-        
-        if (dadosGanhador.premio === "Cupom Indicação") {
-            document.getElementById("campoIndicado").style.display = "block";
-        }
+        if (dadosGanhador.premio === "Cupom Indicação") document.getElementById("campoIndicado").style.display = "block";
         atualizarLinkFinal();
     }
 
@@ -221,13 +216,9 @@
     function verificarAcao(e) {
         if (dadosGanhador.premio === "Cupom Indicação") {
             const nomeAmigoVal = document.getElementById("nomeAmigo").value;
-            if (!nomeAmigoVal) {
-                alert("Por favor, digite o nome do seu amigo(a)!");
-                return false;
-            }
+            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a)!"); return false; }
             enviarDadosPlanilha(dadosGanhador);
         }
-        
         if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
             setTimeout(() => {
                 passoGlobal = 2;
