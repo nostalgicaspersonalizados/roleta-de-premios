@@ -101,7 +101,9 @@
 <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    const const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
+    
+    // SEU LINK DO GOOGLE ATUALIZADO
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
 
     const premiosData = [
         { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
@@ -115,14 +117,6 @@
     let passoGlobal = 1;
     let dadosGanhador = {};
 
-    window.onload = function() {
-        const travaReal = localStorage.getItem("nostalgicas_v12_final");
-        if (travaReal) {
-            dadosGanhador = JSON.parse(travaReal);
-            exibirResultado();
-        }
-    };
-
     function draw() {
         const fatia = (2 * Math.PI) / 5;
         ctx.clearRect(0, 0, 500, 500);
@@ -132,4 +126,119 @@
             ctx.fill(); ctx.stroke(); ctx.restore();
             ctx.save(); ctx.translate(250, 250); ctx.rotate(i * fatia + fatia / 2 - Math.PI / 2);
             ctx.fillStyle = (i === 1 || i === 3) ? "#fff" : "#300870"; 
-            ctx.textAlign = "right"; ctx.font =
+            ctx.textAlign = "right"; ctx.font = "bold 22px Arial"; ctx.fillText(premiosData[i].name, 230, 8); ctx.restore();
+        }
+    }
+
+    function validarForm() {
+        const nome = document.getElementById("nomeCliente").value;
+        if (nome.length < 2) { alert("Digite seu nome!"); return; }
+        if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos LGPD."); return; }
+        
+        document.getElementById("formInicial").style.display = "none";
+        document.getElementById("areaRoleta").style.display = "block";
+        draw();
+    }
+
+    function girar() {
+        document.getElementById("spinBtn").disabled = true;
+        const random = Math.random() * 100;
+        let acumulado = 0; let sorteadoIndex = 0;
+        for (let i = 0; i < premiosData.length; i++) {
+            acumulado += premiosData[i].chance;
+            if (random <= acumulado) { sorteadoIndex = i; break; }
+        }
+        anguloAcumulado += (3600 + (360 - (sorteadoIndex * 72)) - 36);
+        canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
+
+        dadosGanhador = {
+            nome: document.getElementById("nomeCliente").value,
+            pedido: document.getElementById("numPedido").value,
+            desejo: document.getElementById("proximoDesejo").value,
+            premio: premiosData[sorteadoIndex].name,
+            desc: premiosData[sorteadoIndex].desc,
+            icone: premiosData[sorteadoIndex].icone,
+            amigo: "" 
+        };
+
+        setTimeout(() => {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
+            exibirResultado();
+            
+            // Se NÃO for indicação, já envia logo.
+            if (dadosGanhador.premio !== "Cupom Indicação") {
+                enviarDadosPlanilha(dadosGanhador);
+            }
+        }, 5100);
+    }
+
+    function enviarDadosPlanilha(dados) {
+        // Criar uma cópia para enviar
+        let dadosParaEnviar = JSON.parse(JSON.stringify(dados));
+        
+        // Verifica se o campo existe antes de ler
+        const campoAmigo = document.getElementById("nomeAmigo");
+        if (campoAmigo) {
+            dadosParaEnviar.amigo = campoAmigo.value;
+        }
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(dadosParaEnviar)
+        }).catch(err => console.log("Erro de rede:", err));
+    }
+
+    function exibirResultado() {
+        document.getElementById("areaRoleta").style.display = "none";
+        document.getElementById("result").style.display = "block";
+        document.getElementById("prizeText").innerText = dadosGanhador.premio;
+        document.getElementById("prizeInfo").innerText = dadosGanhador.desc;
+        document.getElementById("premioIcone").innerText = dadosGanhador.icone;
+        
+        if (dadosGanhador.premio === "Cupom Indicação") {
+            document.getElementById("campoIndicado").style.display = "block";
+        }
+        atualizarLinkFinal();
+    }
+
+    function atualizarLinkFinal() {
+        const campoAmigo = document.getElementById("nomeAmigo");
+        const amigo = (campoAmigo && campoAmigo.value) ? campoAmigo.value : "______";
+        const btn = document.getElementById("waLinkFinal");
+        
+        if (passoGlobal === 1) {
+            let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio}!\n\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
+            if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Amigo Indicado: ${amigo}`;
+            btn.href = `https://api.whatsapp.com/send?phone=5591984711618&text=${encodeURIComponent(texto)}`;
+        } else {
+            let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nInstagram: https://www.instagram.com/nostalgicas.personalizados/`;
+            btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoAmigo)}`;
+        }
+    }
+
+    function verificarAcao(e) {
+        if (dadosGanhador.premio === "Cupom Indicação") {
+            const nomeAmigoVal = document.getElementById("nomeAmigo").value;
+            if (!nomeAmigoVal) {
+                alert("Por favor, digite o nome do seu amigo(a)!");
+                return false;
+            }
+            enviarDadosPlanilha(dadosGanhador);
+        }
+        
+        if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
+            setTimeout(() => {
+                passoGlobal = 2;
+                const btn = document.getElementById("waLinkFinal");
+                btn.innerText = "2º PASSO: ENVIAR PARA O AMIGO";
+                btn.style.background = "#007bff";
+                atualizarLinkFinal();
+            }, 1000);
+        }
+        return true;
+    }
+</script>
+</body>
+</html>
