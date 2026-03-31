@@ -36,36 +36,32 @@
         .subtitle { font-family: 'Dancing Script', cursive; font-size: 24px; color: var(--roxo-logo); margin: 0 0 25px 0; font-weight: 700; }
         
         #formInicial label { display: block; text-align: left; margin: 12px 0 4px 25px; font-weight: 600; font-size: 11px; color: var(--azul-escuro); text-transform: uppercase; letter-spacing: 1px; }
-        #formInicial input[type="text"] { padding: 15px; width: 90%; border: 2px solid rgba(0,0,0,0.05); border-radius: 18px; font-size: 15px; margin-bottom: 8px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.9); transition: 0.3s; }
-        #formInicial input[type="text"]:focus { border-color: var(--roxo-logo); box-shadow: 0 0 15px rgba(140,82,255,0.2); }
+        #formInicial input[type="text"] { padding: 15px; width: 90%; border: 2px solid rgba(0,0,0,0.05); border-radius: 18px; font-size: 15px; margin-bottom: 8px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.9); }
 
         .lgpd-container { display: flex; align-items: flex-start; justify-content: center; margin: 15px 10px; gap: 10px; text-align: left; }
         .lgpd-container input { margin-top: 4px; transform: scale(1.3); cursor: pointer; }
         .lgpd-container label { margin: 0; font-size: 10px; color: #555; line-height: 1.4; cursor: pointer; }
 
-        .btn-main { padding: 20px; width: 90%; font-size: 18px; font-weight: 800; background: linear-gradient(135deg, var(--roxo-logo), #6a32cc); color: white; border: none; border-radius: 20px; cursor: pointer; margin-top: 15px; text-transform: uppercase; box-shadow: 0 10px 25px rgba(140,82,255,0.4); transition: 0.3s; }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(140,82,255,0.5); }
+        .btn-main { padding: 20px; width: 90%; font-size: 18px; font-weight: 800; background: linear-gradient(135deg, var(--roxo-logo), #6a32cc); color: white; border: none; border-radius: 20px; cursor: pointer; margin-top: 15px; text-transform: uppercase; box-shadow: 0 10px 25px rgba(140,82,255,0.4); }
 
         .canvas-wrap { position: relative; width: 300px; height: 300px; margin: 25px auto; }
-        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--azul-escuro); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid var(--dourado); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); }
+        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--azul-escuro); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
+        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid var(--dourado); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
         
         #result { display: none; margin-top: 20px; border-top: 4px solid var(--amarelo); padding-top: 25px; animation: slideUp 0.6s ease-out; }
-        .premio-card { background: var(--gradiente-premio); border-radius: 30px; padding: 30px 20px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 3px solid var(--dourado); position: relative; overflow: hidden; color: white; }
-        .premio-card::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%); transform: rotate(45deg); animation: shine 4s infinite; }
+        .premio-card { background: var(--gradiente-premio); border-radius: 30px; padding: 30px 20px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 3px solid var(--dourado); color: white; position: relative; }
 
         #prizeText { font-size: 28px; font-weight: 800; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 0 3px 6px rgba(0,0,0,0.3); }
         #prizeInfo { font-size: 15px; font-weight: 600; line-height: 1.5; margin: 0; opacity: 0.95; }
         
         #campoIndicado { display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 20px; }
-        #campoIndicado label { color: white; font-weight: 800; font-size: 12px; margin-bottom: 8px; display: block; text-shadow: 0 2px 4px rgba(0,0,0,0.2); text-align: center; }
+        #campoIndicado label { color: white; font-weight: 800; font-size: 12px; margin-bottom: 8px; display: block; text-align: center; }
         #nomeAmigo { padding: 15px; width: 100%; border: none; border-radius: 15px; font-size: 15px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.95); text-align: center; font-weight: 700; color: var(--azul-escuro); }
 
-        .wa-btn { display: inline-block; margin-top: 10px; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; }
+        .wa-btn { display: inline-block; margin-top: 10px; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; cursor: pointer; border: none; box-shadow: 0 10px 25px rgba(37,211,102,0.4); }
         #instrucaoPasso { font-size: 11px; color: var(--azul-escuro); margin-top: 15px; font-weight: 600; font-style: italic; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shine { 0% { left: -50%; } 100% { left: 150%; } }
     </style>
 </head>
 <body>
@@ -83,7 +79,7 @@
         <input type="text" id="proximoDesejo" placeholder="O que pretende comprar?">
         <div class="lgpd-container">
             <input type="checkbox" id="checkLGPD">
-            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas para fins de sorteio e contato conforme a LGPD.</label>
+            <label for="checkLGPD">Aceito o uso dos meus dados pela Nostálgicas (LGPD).</label>
         </div>
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
@@ -98,15 +94,15 @@
 
     <div id="result">
         <div class="premio-card">
-            <span id="premioIcone" style="font-size:55px; display:block; margin-bottom:15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🏆</span>
+            <span id="premioIcone" style="font-size:55px; display:block; margin-bottom:15px;">🏆</span>
             <h3 id="prizeText"></h3>
             <p id="prizeInfo"></p>
             <div id="campoIndicado">
                 <label>NOME DO AMIGO(A) INDICADO:</label>
-                <input type="text" id="nomeAmigo" placeholder="Quem ganhará o presente?" oninput="atualizarLinkZap()">
+                <input type="text" id="nomeAmigo" placeholder="Quem ganhará o presente?" oninput="gerarLinks()">
             </div>
         </div>
-        <a id="waLink" href="#" class="wa-btn" target="_blank" onclick="proximoPassoIndica()">1º PASSO: VALIDAR NO WHATSAPP</a>
+        <button id="waBtn" class="wa-btn" onclick="executarAcaoWhatsApp()">1º PASSO: VALIDAR NO WHATSAPP</button>
         <p id="instrucaoPasso">Você precisa nos avisar para validarmos o prêmio.</p>
     </div>
 </div>
@@ -124,11 +120,8 @@
 
     let anguloAcumulado = 0;
     let passoIndica = 1;
-
-    window.onload = function() {
-        const salvo = localStorage.getItem("nostalgicas_vFinal_v7");
-        if (salvo) { exibirResultadoFinal(JSON.parse(salvo)); }
-    };
+    let msgFinalLoja = "";
+    let msgFinalAmigo = "";
 
     function draw() {
         const fatia = (2 * Math.PI) / 5;
@@ -155,8 +148,7 @@
     }
 
     function girar() {
-        const btn = document.getElementById("spinBtn");
-        btn.disabled = true; btn.innerText = "SORTEANDO...";
+        document.getElementById("spinBtn").disabled = true;
         const random = Math.random() * 100;
         let acumulado = 0; let sorteadoIndex = 0;
         for (let i = 0; i < premiosData.length; i++) {
@@ -168,7 +160,8 @@
         anguloAcumulado += (3600 + anguloSorteado - (grausFatia / 2));
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
 
-        const objGanhador = {
+        // Salva os dados no objeto global para não perder
+        window.ganhador = {
             nome: document.getElementById("nomeCliente").value,
             pedido: document.getElementById("numPedido").value,
             desejo: document.getElementById("proximoDesejo").value,
@@ -176,65 +169,66 @@
             desc: premiosData[sorteadoIndex].desc,
             icone: premiosData[sorteadoIndex].icone
         };
-
-        localStorage.setItem("nostalgicas_vFinal_v7", JSON.stringify(objGanhador));
-        enviarParaPlanilha(objGanhador);
-
+        
         setTimeout(() => {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
-            exibirResultadoFinal(objGanhador);
+            exibirResultadoFinal(window.ganhador);
         }, 5100);
     }
 
-    function enviarParaPlanilha(dados) {
-        const amigo = document.getElementById("nomeAmigo") ? document.getElementById("nomeAmigo").value : "";
-        const pFinal = amigo ? `${dados.premio} (Indicado: ${amigo})` : dados.premio;
-        fetch("https://script.google.com/macros/s/AKfycbw6Btaxwl4P257YG-_0mGOsSeUNVDGz6NfXRgvD-Jfk-CBE7ikRwIhWMdO-BbdoMyp1Rg/exec", {
-            method: "POST", mode: "no-cors",
-            body: JSON.stringify({ nome: dados.nome, pedido: dados.pedido, desejo: dados.desejo, premio: pFinal })
-        });
-    }
-
     function exibirResultadoFinal(dados) {
-        document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "none";
         document.getElementById("result").style.display = "block";
         document.getElementById("prizeText").innerText = dados.premio;
         document.getElementById("prizeInfo").innerText = dados.desc;
         document.getElementById("premioIcone").innerText = dados.icone;
-        if (dados.premio === "Cupom Indicação") { document.getElementById("campoIndicado").style.display = "block"; }
-        atualizarLinkZap();
-    }
-
-    function proximoPassoIndica() {
-        const dados = JSON.parse(localStorage.getItem("nostalgicas_vFinal_v7"));
-        const amigo = document.getElementById("nomeAmigo").value || "______";
-        if (dados.premio === "Cupom Indicação" && passoIndica === 1) {
-            enviarParaPlanilha(dados); // Re-envia com nome do amigo
-            setTimeout(() => {
-                passoIndica = 2;
-                const btn = document.getElementById("waLink");
-                btn.innerText = `2º PASSO: ENVIAR PARA ${amigo.toUpperCase()}`;
-                btn.style.background = "#007bff";
-                document.getElementById("instrucaoPasso").innerText = "Agora envie o presente para o seu amigo!";
-                atualizarLinkZap();
-            }, 1500);
+        if (dados.premio === "Cupom Indicação") { 
+            document.getElementById("campoIndicado").style.display = "block"; 
         }
+        gerarLinks();
     }
 
-    function atualizarLinkZap() {
-        const data = JSON.parse(localStorage.getItem("nostalgicas_vFinal_v7"));
-        if (!data) return;
+    function gerarLinks() {
+        const d = window.ganhador;
+        if (!d) return;
         const amigo = document.getElementById("nomeAmigo").value || "______";
-        const btn = document.getElementById("waLink");
         
+        // MENSAGEM PARA A LOJA (VOCÊ)
+        let textoLoja = `Olá! Sou ${d.nome} e acabei de ganhar ${d.premio} na roleta!\n\n📌 *Dados do Pedido:* \nNome: ${d.nome}\nPedido: #${d.pedido}\nPróximo desejo: ${d.desejo}`;
+        if (d.premio === "Cupom Indicação") textoLoja += `\n\n🎁 *Indicação para:* ${amigo}`;
+        
+        msgFinalLoja = `https://wa.me/message/U5MVBCCYBHLMF1?text=${encodeURIComponent(textoLoja)}`;
+
+        // MENSAGEM PARA O AMIGO
+        let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas Personalizados e escolhi você para ganhar 10% de desconto também! 🎁\n\nDá uma olhadinha no trabalho deles: https://www.instagram.com/nostalgicas.personalizados/`;
+        msgFinalAmigo = `https://wa.me/?text=${encodeURIComponent(textoAmigo)}`;
+    }
+
+    function executarAcaoWhatsApp() {
+        const d = window.ganhador;
+        const amigo = document.getElementById("nomeAmigo").value;
+
+        if (d.premio === "Cupom Indicação" && !amigo && passoIndica === 1) {
+            alert("Por favor, digite o nome do seu amigo(a) primeiro!");
+            return;
+        }
+
         if (passoIndica === 1) {
-            let msgLoja = `Olá! Sou ${data.nome} e ganhei ${data.premio}!\n\nPedido: #${data.pedido}\nDesejo: ${data.desejo}`;
-            if (data.premio === "Cupom Indicação") msgLoja += `\nIndicado: ${amigo}`;
-            btn.href = `https://wa.me/message/U5MVBCCYBHLMF1?text=${encodeURIComponent(msgLoja)}`;
+            // Envia para você
+            window.open(msgFinalLoja, '_blank');
+            
+            if (d.premio === "Cupom Indicação") {
+                setTimeout(() => {
+                    passoIndica = 2;
+                    const btn = document.getElementById("waBtn");
+                    btn.innerText = `2º PASSO: ENVIAR PARA ${amigo.toUpperCase()}`;
+                    btn.style.background = "#007bff";
+                    document.getElementById("instrucaoPasso").innerText = "Agora envie o presente para o seu amigo!";
+                }, 1000);
+            }
         } else {
-            let msgAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nVeja aqui: https://www.instagram.com/nostalgicas.personalizados/`;
-            btn.href = `https://wa.me/?text=${encodeURIComponent(msgAmigo)}`;
+            // Envia para o amigo
+            window.open(msgFinalAmigo, '_blank');
         }
     }
 </script>
