@@ -212,15 +212,19 @@
             return false;
         }
         
-        if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
-            setTimeout(() => {
-                passoGlobal = 2;
-                const btn = document.getElementById("waLinkFinal");
-                btn.innerText = "2º PASSO: ENVIAR PARA O AMIGO";
-                btn.style.background = "#007bff";
-                atualizarLinkFinal();
-            }, 1000);
-        }
+        // Procure esta parte no seu código atual e substitua apenas o campo 'premio':
+
+dadosGanhador = {
+    nome: document.getElementById("nomeCliente").value,
+    pedido: document.getElementById("numPedido").value,
+    desejo: document.getElementById("proximoDesejo").value,
+    // ABAIXO: Se for indicação, ele já junta o prêmio com o nome do amigo para a planilha
+    premio: premiosData[sorteadoIndex].name === "Cupom Indicação" 
+            ? "Cupom Indicação - Amigo: " + document.getElementById("nomeAmigo").value 
+            : premiosData[sorteadoIndex].name,
+    desc: premiosData[sorteadoIndex].desc,
+    icone: premiosData[sorteadoIndex].icone
+};
         return true;
     }
 </script>
