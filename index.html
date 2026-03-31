@@ -86,9 +86,15 @@
             ctx.restore();
         }
     }
-
-    function validarForm() {
-        if (document.getElementById("numPedido").value.length < 1) return alert("Preencha os campos!");
+function validarForm() {
+        const pedido = document.getElementById("numPedido").value;
+        const desejo = document.getElementById("proximoDesejo").value;
+        
+        if (pedido.length < 1 || desejo.length < 2) {
+            alert("Por favor, preencha o número do pedido e o seu desejo!");
+            return;
+        }
+        
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
