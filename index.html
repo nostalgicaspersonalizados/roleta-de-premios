@@ -124,7 +124,7 @@
             document.getElementById("prizeInfo").innerText = ganhou.desc;
             
             // NÚMERO JÁ CONFIGURADO
-            const whatsapp = "5591984711618"; 
+            const whatsapp = "55091984711618"; 
             const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido Atual: #${pedido}\nPróximo Desejo: ${desejo}\n\nDeixe reservado para minha próxima compra!`);
             
             document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
