@@ -6,30 +6,68 @@
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --gold: #bc6c25; --cream: #faedcd; --brown: #463f3a; --tan: #d4a373; }
-        body { background: var(--cream); text-align: center; font-family: 'Segoe UI', sans-serif; color: var(--brown); padding: 20px; }
-        .box { background: white; max-width: 450px; margin: 0 auto; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 2px solid var(--tan); }
-        h2 { color: var(--gold); margin-top: 0; font-size: 1.8rem; }
-        label { display: block; text-align: left; margin: 10px 0 5px 30px; font-weight: bold; font-size: 14px; }
-        input { padding: 14px; width: 85%; border: 2px solid var(--tan); border-radius: 12px; font-size: 16px; margin-bottom: 15px; outline: none; box-sizing: border-box; }
-        .canvas-wrap { position: relative; width: 320px; height: 320px; margin: 25px auto; }
-        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 7px solid var(--brown); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
-        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #e63946; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
-        .btn-main { padding: 18px; width: 90%; font-size: 18px; font-weight: bold; background: var(--gold); color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 #8a4a16; transition: 0.2s; }
-        .btn-main:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; }
-        .wa-btn { display: inline-block; margin-top: 15px; padding: 15px; background: #25d366; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; width: 85%; font-size: 17px; }
+        :root { 
+            --gold: #b07d62;    /* Tom terroso elegante */
+            --cream: #fdfaf7;   /* Fundo off-white clean */
+            --brown: #4a3f35;   /* Texto café escuro */
+            --tan: #d6ccc2;     /* Bordas suaves */
+            --accent: #bc6c25;  /* Destaque artesanal */
+        }
+        body { 
+            background: var(--cream); 
+            background-image: radial-gradient(var(--tan) 0.5px, transparent 0.5px);
+            background-size: 20px 20px; 
+            text-align: center; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            color: var(--brown); 
+            padding: 20px; 
+            margin: 0;
+        }
+        .box { 
+            background: white; 
+            max-width: 420px; 
+            margin: 20px auto; 
+            padding: 40px 20px; 
+            border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(74,63,53,0.08); 
+            border: 1px solid var(--tan); 
+        }
+        h2 { color: var(--accent); font-size: 2rem; margin-bottom: 5px; letter-spacing: -1px; }
+        .subtitle { font-size: 13px; color: var(--gold); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        label { display: block; text-align: left; margin: 15px 0 5px 35px; font-weight: 600; font-size: 12px; color: var(--brown); }
+        input { 
+            padding: 15px; width: 85%; border: 1.5px solid var(--tan); border-radius: 15px; 
+            font-size: 16px; margin-bottom: 10px; outline: none; transition: 0.3s; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(188,108,37,0.1); }
+        .btn-main { 
+            padding: 18px; width: 90%; font-size: 17px; font-weight: bold; background: var(--accent); 
+            color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; margin-top: 15px;
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(188,108,37,0.2); }
+        .btn-main:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+        /* Estilo da Roleta */
+        .canvas-wrap { position: relative; width: 320px; height: 320px; margin: 30px auto; }
+        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--brown); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
+        .pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #e63946; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        
+        #result { display: none; margin-top: 25px; border-top: 2px dashed var(--tan); padding-top: 20px; animation: fadeInUp 0.6s ease; }
+        .wa-btn { display: inline-block; margin-top: 15px; padding: 16px; background: #25d366; color: white; text-decoration: none; border-radius: 15px; font-weight: bold; width: 85%; font-size: 16px; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="box">
     <h2>Nostálgicas</h2>
+    <p class="subtitle">Presentes com Memória</p>
+
     <div id="formInicial">
-        <label>Número do Pedido:</label>
-        <input type="text" id="numPedido" placeholder="Ex: 1020">
-        <label>Seu próximo desejo na loja:</label>
-        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Álbum...">
+        <label>NÚMERO DO PEDIDO:</label>
+        <input type="text" id="numPedido" placeholder="Digite aqui...">
+        <label>O QUE VOCÊ DESEJA COMPRAR DEPOIS?</label>
+        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Álbum, Quadro...">
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
     
@@ -38,13 +76,13 @@
             <div class="pointer"></div>
             <canvas id="canvas" width="500" height="500"></canvas>
         </div>
-        <button id="spinBtn" class="btn-main" onclick="girar()">GIRAR AGORA!</button>
+        <button id="spinBtn" class="btn-main" onclick="girar()">GIRAR A ROLETA!</button>
     </div>
 
     <div id="result">
-        <h3 id="prizeText" style="color: var(--gold); font-size: 22px; margin: 5px 0;"></h3>
-        <p id="prizeInfo" style="font-size: 15px; color: #555;"></p>
-        <a id="waLink" href="#" class="wa-btn" target="_blank">Resgatar no WhatsApp</a>
+        <h3 id="prizeText" style="color: var(--accent); font-size: 24px; margin: 5px 0;"></h3>
+        <p id="prizeInfo" style="font-size: 15px; color: #666; margin-bottom: 20px;"></p>
+        <a id="waLink" href="#" class="wa-btn" target="_blank">RESGATAR NO WHATSAPP</a>
     </div>
 </div>
 
@@ -53,11 +91,11 @@
     const ctx = canvas.getContext("2d");
     
     const premiosData = [
-        { name: "Cupom Indicação", chance: 45, color: "#d4a373", desc: "Ganhe 10% e dê 10% para um amigo!" },
-        { name: "15% de Desconto", chance: 30, color: "#ccd5ae", desc: "Desconto especial para você usar!" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#faedcd", desc: "Desconto fixo no valor total." },
-        { name: "Mini Álbum",      chance: 5,  color: "#bc6c25", desc: "Um Chuveirinho de 10 fotos de presente!" },
-        { name: "Frete Grátis",    chance: 2,  color: "#e9edc9", desc: "Sua próxima entrega é por nossa conta!" }
+        { name: "Cupom Indicação", chance: 45, color: "#d6ccc2", desc: "Ganhe 10% e dê 10% para um amigo!" },
+        { name: "15% de Desconto", chance: 30, color: "#edede9", desc: "Desconto especial para você usar!" },
+        { name: "R$ 10 OFF",       chance: 18, color: "#f5ebe0", desc: "Desconto fixo no valor total." },
+        { name: "Mini Álbum",      chance: 5,  color: "#d5bdaf", desc: "Um Chuveirinho de 10 fotos de presente!" },
+        { name: "Frete Grátis",    chance: 2,  color: "#e3d5ca", desc: "Sua próxima entrega é por nossa conta!" }
     ];
 
     let anguloAcumulado = 0;
@@ -65,28 +103,22 @@
     function draw() {
         const fatia = (2 * Math.PI) / 5;
         ctx.clearRect(0, 0, 500, 500);
-        
         for (let i = 0; i < 5; i++) {
-            // Desenhar Fatia
             ctx.save();
             ctx.beginPath();
             ctx.fillStyle = premiosData[i].color;
             ctx.moveTo(250, 250);
             ctx.arc(250, 250, 250, i * fatia - Math.PI/2, (i + 1) * fatia - Math.PI/2);
             ctx.fill();
-            ctx.strokeStyle = "#463f3a";
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#4a3f35";
+            ctx.lineWidth = 1;
             ctx.stroke();
             ctx.restore();
 
-            // Desenhar Texto
             ctx.save();
             ctx.translate(250, 250);
-            ctx.rotate(i * fatia); // Alinhado com o início da fatia
-            ctx.rotate(fatia / 2); // Rotaciona para o meio da fatia
-            ctx.rotate(-Math.PI / 2); // Ajuste para o topo (12h)
-            
-            ctx.fillStyle = "#463f3a";
+            ctx.rotate(i * fatia + fatia / 2 - Math.PI / 2);
+            ctx.fillStyle = "#4a3f35";
             ctx.textAlign = "right";
             ctx.font = "bold 20px Arial";
             ctx.fillText(premiosData[i].name, 230, 8);
@@ -95,9 +127,9 @@
     }
 
     function validarForm() {
-        const pedido = document.getElementById("numPedido").value;
-        const desejo = document.getElementById("proximoDesejo").value;
-        if (pedido.length < 1 || desejo.length < 2) return alert("Preencha todos os campos!");
+        const p = document.getElementById("numPedido").value;
+        const d = document.getElementById("proximoDesejo").value;
+        if (p.length < 1 || d.length < 2) return alert("Por favor, preencha os campos para girar!");
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -119,22 +151,20 @@
         const anguloSorteado = 360 - (sorteadoIndex * grausFatia);
         const giroFinal = 2880 + anguloSorteado - (grausFatia / 2);
         anguloAcumulado += giroFinal;
-        
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
+
+        // --- ENVIO PARA A PLANILHA ---
+        const urlPlanilha = "https://script.google.com/macros/s/AKfycbzKQgkHJv93MAL70X4k3MjNmCxN1GEJuK4u6bIrn22adQUGuvZTVvMBUmZCHbNDC_g/exec";
+        
+        fetch(urlPlanilha, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify({
+                pedido: document.getElementById("numPedido").value,
+                desejo: document.getElementById("proximoDesejo").value,
+                premio: premiosData[sorteadoIndex].name
+            })
+        });
 
         setTimeout(() => {
             const ganhou = premiosData[sorteadoIndex];
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            document.getElementById("result").style.display = "block";
-            document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
-            document.getElementById("prizeInfo").innerText = ganhou.desc;
-            
-            const whatsapp = "559184711618"; 
-            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido: #${document.getElementById("numPedido").value}\nDesejo: ${document.getElementById("proximoDesejo").value}`);
-            document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
-            btn.innerText = "GIRO CONCLUÍDO!";
-        }, 5100);
-    }
-</script>
-</body>
-</html>
