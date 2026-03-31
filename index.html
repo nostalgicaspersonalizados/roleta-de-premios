@@ -6,89 +6,111 @@
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        /* ==========================================================
-           PASSO 1: SUAS CORES DA LOJA (Mude os códigos hexadecimais #)
-           ========================================================== */
+        /* CORES DA LOJA NOSTÁLGICAS */
         :root { 
-            --cor-principal: #8c52ff;  /* Cor dos botões e destaques (ex: Terracota) */
-            --cor-secundaria: #000000; /* Cor dos textos secundários (ex: Marrom Suave) */
-            --cor-fundo: #300870;      /* Cor de fundo da página (ex: Off-White/Creme) */
-            --cor-texto: #fefefe;      /* Cor do texto principal (ex: Café Escuro) */
-            --cor-borda: #ffb11b;      /* Cor das bordas suaves (ex: Bege) */
+            --azul-escuro: #300870;
+            --branco: #fefefe;
+            --preto: #000000;
+            --amarelo: #faea60;
+            --dourado: #ffb11b;
+            --roxo-logo: #8c52ff;
         }
 
         body { 
-            background-color: var(--cor-fundo); 
-            /* Efeito de fundo pontilhado suave (estilo Bullet Journal) */
-            background-image: radial-gradient(var(--cor-borda) 0.5px, transparent 0.5px);
-            background-size: 20px 20px; 
+            background: url('fundotema.png') no-repeat center center fixed; 
+            background-size: cover;
             text-align: center; 
             font-family: 'Segoe UI', Roboto, sans-serif; 
-            color: var(--cor-texto); 
-            padding: 20px; 
             margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
+        /* EFEITO DE VIDRO COM BLUR (IGUAL AO PROJETO RA) */
         .box { 
-            background: black; 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); 
             max-width: 420px; 
-            margin: 20px auto; 
-            padding: 30px 20px 40px 20px; 
-            border-radius: 30px; 
-            box-shadow: 0 15px 35px rgba(74,63,53,0.08); 
-            border: 1px solid var(--cor-borda); 
+            width: 90%;
+            padding: 40px 20px; 
+            border-radius: 40px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255,255,255,0.4); 
             position: relative;
         }
 
-        /* Estilo da Logo */
-        .logo-container { margin-bottom: 20px; text-align: center; }
-        .logo-container img { max-width: 150px; height: auto; object-fit: contain; }
-
-        h2 { color: var(--cor-principal); font-size: 1.8rem; margin: 0 0 5px 0; letter-spacing: -1px; }
-        .subtitle { font-size: 12px; color: var(--cor-secundaria); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-        
-        label { display: block; text-align: left; margin: 15px 0 5px 35px; font-weight: 600; font-size: 12px; color: var(--cor-texto); }
-        input { 
-            padding: 15px; width: 85%; border: 1.5px solid var(--cor-borda); border-radius: 15px; 
-            font-size: 16px; margin-bottom: 10px; outline: none; transition: 0.3s; box-sizing: border-box;
-            background-color: #fff;
+        .logo-container img { 
+            max-width: 180px; 
+            height: auto; 
+            margin-bottom: 10px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
         }
-        input:focus { border-color: var(--cor-principal); box-shadow: 0 0 0 3px rgba(188,108,37,0.1); }
+
+        h2 { color: var(--azul-escuro); font-size: 1.8rem; margin: 0; letter-spacing: -1px; }
+        .subtitle { font-size: 11px; color: var(--roxo-logo); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
+        
+        label { display: block; text-align: left; margin: 15px 0 5px 35px; font-weight: 700; font-size: 12px; color: var(--azul-escuro); text-transform: uppercase; }
+        input { 
+            padding: 15px; width: 85%; border: 2px solid #eee; border-radius: 18px; 
+            font-size: 16px; margin-bottom: 10px; outline: none; transition: 0.3s; box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+        }
+        input:focus { border-color: var(--roxo-logo); box-shadow: 0 0 15px rgba(140,82,255,0.2); }
         
         .btn-main { 
-            padding: 18px; width: 90%; font-size: 17px; font-weight: bold; background: var(--cor-principal); 
-            color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; margin-top: 15px;
-            text-transform: uppercase; letter-spacing: 1px;
+            padding: 20px; width: 90%; font-size: 18px; font-weight: 900; 
+            background: linear-gradient(135deg, var(--roxo-logo), #6a32cc); 
+            color: white; border: none; border-radius: 20px; cursor: pointer; transition: 0.4s; margin-top: 15px;
+            box-shadow: 0 10px 20px rgba(140,82,255,0.3);
+            text-transform: uppercase;
         }
-        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(188,108,37,0.2); }
-        .btn-main:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .btn-main:hover { transform: scale(1.03); box-shadow: 0 15px 25px rgba(140,82,255,0.4); }
+        .btn-main:disabled { background: #bbb; transform: none; box-shadow: none; }
 
         /* Estilo da Roleta */
         .canvas-wrap { position: relative; width: 320px; height: 320px; margin: 30px auto; }
-        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--cor-texto); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #e63946; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        #canvas { 
+            width: 100%; height: 100%; border-radius: 50%; 
+            border: 10px solid var(--azul-escuro); 
+            transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); 
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .pointer { 
+            width: 0; height: 0; 
+            border-left: 18px solid transparent; 
+            border-right: 18px solid transparent; 
+            border-top: 35px solid var(--dourado); 
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; 
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+        }
         
-        #result { display: none; margin-top: 25px; border-top: 2px dashed var(--cor-borda); padding-top: 20px; animation: fadeInUp 0.6s ease; }
-        .wa-btn { display: inline-block; margin-top: 15px; padding: 16px; background: #25d366; color: white; text-decoration: none; border-radius: 15px; font-weight: bold; width: 85%; font-size: 16px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .wa-btn:hover { background: #1da851; transform: translateY(-2px); }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #result { display: none; margin-top: 25px; border-top: 3px solid var(--amarelo); padding-top: 20px; animation: fadeInUp 0.6s ease; }
+        .wa-btn { 
+            display: inline-block; margin-top: 15px; padding: 18px; background: #25d366; 
+            color: white; text-decoration: none; border-radius: 20px; font-weight: 900; 
+            width: 85%; font-size: 16px; transition: 0.3s; box-shadow: 0 8px 20px rgba(37,211,102,0.3);
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="box">
     <div class="logo-container">
-        <img src="NOSTÁLGICAS.png" alt="Logo Nostálgicas Personalizados">
+        <img src="NOSTÁLGICAS.PNG" alt="Logo Nostálgicas">
     </div>
     
-    <h2>Nostálgicas</h2>
     <p class="subtitle">Presentes com Memória</p>
 
     <div id="formInicial">
         <label>NÚMERO DO PEDIDO:</label>
-        <input type="text" id="numPedido" placeholder="Ex: 1234">
-        <label>O QUE VOCÊ DESEJA COMPRAR DEPOIS?</label>
-        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Álbum...">
+        <input type="text" id="numPedido" placeholder="Digite o número...">
+        <label>O QUE VOCÊ QUER COMPRAR DEPOIS?</label>
+        <input type="text" id="proximoDesejo" placeholder="Caneca, Álbum, Quadro...">
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
     
@@ -97,27 +119,27 @@
             <div class="pointer"></div>
             <canvas id="canvas" width="500" height="500"></canvas>
         </div>
-        <button id="spinBtn" class="btn-main" onclick="girar()">GIRAR A ROLETA!</button>
+        <button id="spinBtn" class="btn-main" onclick="girar()">GIRAR AGORA!</button>
     </div>
 
     <div id="result">
-        <h3 id="prizeText" style="color: var(--cor-principal); font-size: 24px; margin: 5px 0;"></h3>
-        <p id="prizeInfo" style="font-size: 15px; color: #666; margin-bottom: 20px;"></p>
-        <a id="waLink" href="#" class="wa-btn" target="_blank">RESGATAR NO WHATSAPP</a>
+        <h3 id="prizeText" style="color: var(--roxo-logo); font-size: 26px; margin: 5px 0;"></h3>
+        <p id="prizeInfo" style="font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600;"></p>
+        <a id="waLink" href="#" class="wa-btn" target="_blank">RESGATAR PRÊMIO NO WHATSAPP</a>
     </div>
 </div>
 
 <script>
-    // Configurações Técnicas (Mantidas)
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     
+    // CORES NAS FATIAS DA ROLETA (Alternando entre suas cores)
     const premiosData = [
-        { name: "Cupom Indicação", chance: 45, color: "#d6ccc2", desc: "Ganhe 10% e dê 10% para um amigo!" },
-        { name: "15% de Desconto", chance: 30, color: "#edede9", desc: "Desconto especial para você usar!" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#f5ebe0", desc: "Desconto fixo no valor total." },
-        { name: "Mini Álbum",      chance: 5,  color: "#d5bdaf", desc: "Um Chuveirinho de 10 fotos de presente!" },
-        { name: "Frete Grátis",    chance: 2,  color: "#e3d5ca", desc: "Sua próxima entrega é por nossa conta!" }
+        { name: "Cupom Indicação", chance: 45, color: "#faea60", desc: "Ganhe 10% e dê 10% para um amigo!" }, // Amarelo
+        { name: "15% de Desconto", chance: 30, color: "#8c52ff", desc: "Desconto especial para você usar!" }, // Roxo
+        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", desc: "Desconto fixo no valor total." },    // Dourado
+        { name: "Mini Álbum",      chance: 5,  color: "#300870", desc: "Um Chuveirinho de 10 fotos de presente!" }, // Azul Escuro
+        { name: "Frete Grátis",    chance: 2,  color: "#fefefe", desc: "Sua próxima entrega é por nossa conta!" } // Branco
     ];
 
     let anguloAcumulado = 0;
@@ -132,17 +154,18 @@
             ctx.moveTo(250, 250);
             ctx.arc(250, 250, 250, i * fatia - Math.PI/2, (i + 1) * fatia - Math.PI/2);
             ctx.fill();
-            ctx.strokeStyle = "#4a3f35";
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#300870";
+            ctx.lineWidth = 2;
             ctx.stroke();
             ctx.restore();
 
             ctx.save();
             ctx.translate(250, 250);
             ctx.rotate(i * fatia + fatia / 2 - Math.PI / 2);
-            ctx.fillStyle = "#4a3f35";
+            // Cor do texto na fatia (branco se for fundo escuro, preto se for claro)
+            ctx.fillStyle = (i === 1 || i === 3) ? "#ffffff" : "#300870"; 
             ctx.textAlign = "right";
-            ctx.font = "bold 20px Arial";
+            ctx.font = "bold 22px Arial";
             ctx.fillText(premiosData[i].name, 230, 8);
             ctx.restore();
         }
@@ -151,7 +174,7 @@
     function validarForm() {
         const p = document.getElementById("numPedido").value;
         const d = document.getElementById("proximoDesejo").value;
-        if (p.length < 1 || d.length < 2) return alert("Por favor, preencha os campos para girar!");
+        if (p.length < 1 || d.length < 2) return alert("Preencha os campos para girar!");
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -175,7 +198,7 @@
         anguloAcumulado += giroFinal;
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
 
-        // --- SEU LINK DO GOOGLE (MANTIDO) ---
+        // LINK DA SUA PLANILHA
         const urlPlanilha = "https://script.google.com/macros/s/AKfycbw6Btaxwl4P257YG-_0mGOsSeUNVDGz6NfXRgvD-Jfk-CBE7ikRwIhWMdO-BbdoMyp1Rg/exec";
         
         fetch(urlPlanilha, {
@@ -190,15 +213,15 @@
 
         setTimeout(() => {
             const ganhou = premiosData[sorteadoIndex];
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.7 }, colors: ['#8c52ff', '#ffb11b', '#faea60'] });
             document.getElementById("result").style.display = "block";
-            document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
+            document.getElementById("prizeText").innerText = "VOCÊ GANHOU: " + ganhou.name;
             document.getElementById("prizeInfo").innerText = ganhou.desc;
             
             const whatsapp = "559184711618"; 
-            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido: #${document.getElementById("numPedido").value}\nDesejo: ${document.getElementById("proximoDesejo").value}`);
+            const texto = encodeURIComponent(`Olá! Sou cliente Nostálgicas e acabei de ganhar [${ganhou.name}] na Roleta!\n\nPedido: #${document.getElementById("numPedido").value}\nMeu próximo desejo é: ${document.getElementById("proximoDesejo").value}`);
             document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
-            btn.innerText = "SORTEIO REALIZADO!";
+            btn.innerText = "GANHOU! VEJA ABAIXO";
         }, 5100);
     }
 </script>
