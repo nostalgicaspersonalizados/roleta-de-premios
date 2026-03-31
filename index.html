@@ -102,7 +102,6 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     
-    // TEXTOS DOS PREMIOS RESTAURADOS CONFORME SUA EDIÇÃO
     const premiosData = [
         { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
         { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra na Nostálgicas!" },
@@ -115,12 +114,15 @@
     let passoGlobal = 1;
     let dadosGanhador = {};
 
-    // TRAVA DE SEGURANÇA: Verifica se já girou ao abrir a página
+    // VERIFICAÇÃO DE TRAVA IMEDIATA AO CARREGAR
     window.onload = function() {
-        const salvo = localStorage.getItem("nostalgicas_vFinal_v9");
-        if (salvo) { 
-            dadosGanhador = JSON.parse(salvo);
-            exibirResultado(); 
+        const travaReal = localStorage.getItem("nostalgicas_vFinal_v10");
+        if (travaReal) {
+            dadosGanhador = JSON.parse(travaReal);
+            // Esconde tudo e pula para o resultado
+            document.getElementById("formInicial").style.display = "none";
+            document.getElementById("areaRoleta").style.display = "none";
+            exibirResultado();
         }
     };
 
@@ -138,15 +140,17 @@
     }
 
     function validarForm() {
-        if (document.getElementById("nomeCliente").value.length < 2) { alert("Digite seu nome!"); return; }
+        const nome = document.getElementById("nomeCliente").value;
+        if (nome.length < 2) { alert("Digite seu nome!"); return; }
         if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos LGPD."); return; }
+        
+        // Se o usuário tentar burlar limpando o LocalStorage mas já tiver girado, aqui é uma trava extra
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
     }
 
     function girar() {
-        // TRAVA DE BOTÃO: Impede cliques múltiplos
         document.getElementById("spinBtn").disabled = true;
         
         const random = Math.random() * 100;
@@ -168,8 +172,8 @@
             icone: premiosData[sorteadoIndex].icone
         };
 
-        // SALVA NA TRAVA DE SEGURANÇA
-        localStorage.setItem("nostalgicas_vFinal_v9", JSON.stringify(dadosGanhador));
+        // GRAVA A TRAVA NO MOMENTO DO GIRO
+        localStorage.setItem("nostalgicas_vFinal_v10", JSON.stringify(dadosGanhador));
 
         setTimeout(() => {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
@@ -195,7 +199,6 @@
         if (passoGlobal === 1) {
             let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio} na roleta!\n\n📌 *DADOS DO SORTEIO*:\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
             if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Indicação para: ${amigo}`;
-            
             btn.href = `https://api.whatsapp.com/send?phone=5591984711618&text=${encodeURIComponent(texto)}`;
         } else {
             let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nVeja o Instagram deles aqui: https://www.instagram.com/nostalgicas.personalizados/`;
