@@ -17,8 +17,9 @@
         .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #e63946; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
         .btn-main { padding: 18px; width: 90%; font-size: 18px; font-weight: bold; background: var(--gold); color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 #8a4a16; transition: 0.2s; }
         .btn-main:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; }
+        #result { display: none; margin-top: 25px; border-top: 3px dashed var(--tan); padding-top: 20px; animation: fadeInUp 0.6s ease; }
         .wa-btn { display: inline-block; margin-top: 15px; padding: 15px; background: #25d366; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; width: 85%; font-size: 17px; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -44,7 +45,7 @@
     <div id="result">
         <h3 id="prizeText" style="color: var(--gold); font-size: 22px; margin: 5px 0;"></h3>
         <p id="prizeInfo" style="font-size: 15px; color: #555;"></p>
-        <a id="waLink" href="#" class="wa-btn" target="_blank">Resgatar Presente no WhatsApp</a>
+        <a id="waLink" href="#" class="wa-btn" target="_blank">Resgatar no WhatsApp</a>
     </div>
 </div>
 
@@ -87,7 +88,7 @@
     }
 
     function validarForm() {
-        if (document.getElementById("numPedido").value.length < 2) return alert("Preencha os campos!");
+        if (document.getElementById("numPedido").value.length < 1) return alert("Preencha os campos!");
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -106,7 +107,6 @@
         }
 
         const grausFatia = 360 / 5;
-        // Compensação matemática para o giro horário e ponteiro no topo
         const anguloSorteado = 360 - (sorteadoIndex * grausFatia);
         const giroFinal = 2880 + anguloSorteado - (grausFatia / 2);
         anguloAcumulado += giroFinal;
@@ -123,14 +123,4 @@
             document.getElementById("prizeText").innerText = "GANHOU: " + ganhou.name;
             document.getElementById("prizeInfo").innerText = ganhou.desc;
             
-            // NÚMERO JÁ CONFIGURADO
-            const whatsapp = "55091984711618"; 
-            const texto = encodeURIComponent(`Olá! Ganhei [${ganhou.name}] na Roleta Nostálgicas!\n\nPedido Atual: #${pedido}\nPróximo Desejo: ${desejo}\n\nDeixe reservado para minha próxima compra!`);
-            
-            document.getElementById("waLink").href = "https://api.whatsapp.com/send?phone=" + whatsapp + "&text=" + texto;
-            btn.innerText = "GIRO REALIZADO!";
-        }, 5100);
-    }
-</script>
-</body>
-</html>
+            // NÚMERO CORRIGIDO PARA O FORMATO API WHATSAPP (91 + 8 dígitos
