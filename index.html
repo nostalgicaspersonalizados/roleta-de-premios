@@ -21,117 +21,47 @@
             background: url('fundotema.png') no-repeat center center fixed; 
             background-size: cover;
             text-align: center; 
-            font-family: 'Poppins', sans-serif; /* Fonte base mais moderna */
+            font-family: 'Poppins', sans-serif;
             margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* CONTAINER PRINCIPAL COM EFEITO BLUR */
         .box { 
             background: rgba(255, 255, 255, 0.85); 
             backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); 
             max-width: 420px; width: 90%; padding: 35px 25px; border-radius: 40px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.4); 
-            transition: all 0.3s ease;
         }
 
-        .logo-container img { max-width: 160px; height: auto; margin-bottom: 5px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+        .logo-container img { max-width: 160px; height: auto; margin-bottom: 5px; }
+        .subtitle { font-family: 'Dancing Script', cursive; font-size: 24px; color: var(--roxo-logo); margin: 0 0 25px 0; font-weight: 700; }
         
-        .subtitle { 
-            font-family: 'Dancing Script', cursive;
-            font-size: 24px; color: var(--roxo-logo); margin: 0 0 25px 0; font-weight: 700;
-        }
-        
-        /* ESTILIZAÇÃO DO FORMULÁRIO */
-        #formInicial label { display: block; text-align: left; margin: 12px 0 4px 25px; font-weight: 600; font-size: 11px; color: var(--azul-escuro); text-transform: uppercase; letter-spacing: 1px; }
-        
-        #formInicial input[type="text"] { 
-            padding: 15px; width: 90%; border: 2px solid rgba(0,0,0,0.05); border-radius: 18px; 
-            font-size: 15px; margin-bottom: 8px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.9);
-            transition: 0.3s;
-        }
-        #formInicial input[type="text"]:focus { border-color: var(--roxo-logo); box-shadow: 0 0 15px rgba(140,82,255,0.2); }
+        #formInicial label { display: block; text-align: left; margin: 12px 0 4px 25px; font-weight: 600; font-size: 11px; color: var(--azul-escuro); text-transform: uppercase; }
+        #formInicial input[type="text"] { padding: 15px; width: 90%; border: 2px solid rgba(0,0,0,0.05); border-radius: 18px; font-size: 15px; margin-bottom: 8px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.9); }
 
         .lgpd-container { display: flex; align-items: flex-start; justify-content: center; margin: 15px 20px; gap: 10px; text-align: left; }
-        .lgpd-container input { margin-top: 4px; transform: scale(1.2); cursor: pointer; }
-        .lgpd-container label { margin: 0; font-size: 10px; color: #555; text-transform: none; line-height: 1.4; cursor: pointer; }
+        .lgpd-container input { margin-top: 4px; transform: scale(1.2); }
+        .lgpd-container label { margin: 0; font-size: 10px; color: #555; text-transform: none; line-height: 1.4; }
 
-        .btn-main { 
-            padding: 20px; width: 90%; font-size: 18px; font-weight: 800; 
-            background: linear-gradient(135deg, var(--roxo-logo), #6a32cc); 
-            color: white; border: none; border-radius: 20px; cursor: pointer; margin-top: 15px;
-            text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 10px 25px rgba(140,82,255,0.4);
-            transition: 0.3s;
-        }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(140,82,255,0.5); }
-        .btn-main:active { transform: translateY(1px); }
+        .btn-main { padding: 20px; width: 90%; font-size: 17px; font-weight: 800; background: linear-gradient(135deg, var(--roxo-logo), #6a32cc); color: white; border: none; border-radius: 20px; cursor: pointer; margin-top: 15px; text-transform: uppercase; box-shadow: 0 10px 25px rgba(140,82,255,0.4); }
 
-        /* ESTILIZAÇÃO DA ROLETA */
         .canvas-wrap { position: relative; width: 300px; height: 300px; margin: 25px auto; }
-        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--azul-escuro); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid var(--dourado); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); }
+        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--azul-escuro); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
+        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid var(--dourado); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
         
-        /* --- NOVA ESTILIZAÇÃO DA TELA DE RESULTADO (A "CAIXA FEIA" VIROU ISSO) --- */
-        #result { 
-            display: none; margin-top: 20px; border-top: 4px solid var(--amarelo); padding-top: 25px; 
-            animation: slideUp 0.6s ease-out; /* Animação de entrada */
-        }
+        #result { display: none; margin-top: 20px; border-top: 4px solid var(--amarelo); padding-top: 25px; animation: slideUp 0.6s ease-out; }
+        .premio-card { background: var(--gradiente-premio); border-radius: 25px; padding: 25px; margin-bottom: 20px; border: 3px solid var(--dourado); color: white; position: relative; }
+        .premio-icone { font-size: 50px; margin-bottom: 10px; display: block; }
+        #prizeText { font-size: 26px; font-weight: 800; margin: 0 0 10px 0; text-transform: uppercase; }
+        #prizeInfo { font-size: 14px; font-weight: 600; line-height: 1.5; margin: 0; }
+        
+        #campoIndicado { display: none; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px; }
+        #campoIndicado label { color: white; display: block; font-size: 11px; margin-bottom: 5px; font-weight: 600; }
+        #nomeAmigo { padding: 12px; width: 100%; border: none; border-radius: 12px; font-size: 14px; text-align: center; outline: none; font-weight: 600; }
 
-        .premio-card {
-            background: var(--gradiente-premio);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            border: 3px solid var(--dourado);
-            position: relative;
-            overflow: hidden;
-        }
-        /* Efeito de brilho no card */
-        .premio-card::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-            transform: rotate(45deg); animation: shine 3s infinite;
-        }
+        .wa-btn { display: inline-block; margin-top: 10px; padding: 20px; background: #25d366; color: white; text-decoration: none; border-radius: 20px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 14px; box-shadow: 0 10px 20px rgba(37,211,102,0.3); }
+        #instrucaoPasso { font-size: 11px; color: var(--azul-escuro); margin-top: 12px; font-weight: 600; }
 
-        .premio-icone { font-size: 50px; margin-bottom: 10px; display: block; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); }
-        
-        #prizeText { 
-            font-size: 28px; font-weight: 800; color: var(--branco); 
-            margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;
-            text-shadow: 0 3px 6px rgba(0,0,0,0.3);
-        }
-        
-        #prizeInfo { font-size: 15px; color: rgba(255,255,255,0.9); margin: 0; font-weight: 600; line-height: 1.5; }
-        
-        /* Campo do Amigo dentro do card (condicional) */
-        #campoIndicado { 
-            display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px; 
-            animation: fadeIn 0.5s; 
-        }
-        #campoIndicado label { color: var(--branco); text-align: center; margin-left: 0; font-size: 12px; margin-bottom: 8px; }
-        #nomeAmigo { 
-            padding: 12px; width: 100%; border: none; border-radius: 12px; 
-            font-size: 14px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.9);
-            text-align: center; font-weight: 600;
-        }
-
-        /* Botão de Resgate Estilizado */
-        .wa-btn { 
-            display: inline-block; margin-top: 10px; padding: 20px; background: #25d366; 
-            color: white; text-decoration: none; border-radius: 20px; font-weight: 800; 
-            width: 90%; text-transform: uppercase; font-size: 15px; letter-spacing: 1px;
-            box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s;
-        }
-        .wa-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37,211,102,0.5); }
-        
-        #instrucaoPasso { font-size: 11px; color: var(--azul-escuro); margin-top: 12px; font-weight: 600; font-style: italic; }
-
-        /* ANIMAÇÕES */
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes shine { 0% { left: -50%; } 100% { left: 150%; } }
-
     </style>
 </head>
 <body>
@@ -145,16 +75,13 @@
     <div id="formInicial">
         <label>COMO PODEMOS TE CHAMAR?</label>
         <input type="text" id="nomeCliente" placeholder="Seu nome">
-
         <label>NÚMERO DO PEDIDO (Superior do recibo):</label>
         <input type="text" id="numPedido" placeholder="Digite o número...">
-        
         <label>O QUE QUER ADQUIRIR NO PRÓXIMO PEDIDO?</label>
         <input type="text" id="proximoDesejo" placeholder="Caneca, Álbum, Quadro...">
-
         <div class="lgpd-container">
             <input type="checkbox" id="checkLGPD">
-            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas para fins de sorteio e contato, conforme a LGPD.</label>
+            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas conforme a LGPD.</label>
         </div>
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
@@ -172,15 +99,12 @@
             <span id="premioIcone" class="premio-icone">🏆</span>
             <h3 id="prizeText"></h3>
             <p id="prizeInfo"></p>
-            
             <div id="campoIndicado">
                 <label>NOME DO AMIGO(A) INDICADO:</label>
                 <input type="text" id="nomeAmigo" placeholder="Quem ganhará o presente?" oninput="atualizarLinkZap()">
             </div>
         </div>
-
         <a id="waLink" href="#" class="wa-btn" target="_blank" onclick="proximoPassoIndica()">1º PASSO: ME AVISE NO WHATSAPP</a>
-        
         <p id="instrucaoPasso">Você precisa nos avisar primeiro para validarmos o prêmio.</p>
     </div>
 </div>
@@ -189,7 +113,6 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     
-    // Definição dos prêmios com ícones e cores
     const premiosData = [
         { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "10% para um amigo! Após ele fechar o primeiro pedido, você garante 10% no seu próximo!" },
         { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Desconto especial para você usar na próxima compra!" },
@@ -199,17 +122,15 @@
     ];
 
     let anguloAcumulado = 0;
-    let passoIndica = 1; // Controle do fluxo de 2 passos
+    let passoIndica = 1;
 
-    // Verificação de segurança (anti-repetição)
     window.onload = function() {
         try {
-            const salvo = localStorage.getItem("nostalgicas_vFinal_v3"); // Chave nova para testar visual
+            const salvo = localStorage.getItem("nostalgicas_vFinal_v4");
             if (salvo) { exibirResultadoFinal(JSON.parse(salvo)); }
         } catch (e) {}
     };
 
-    // Desenha a roleta
     function draw() {
         const fatia = (2 * Math.PI) / 5;
         ctx.clearRect(0, 0, 500, 500);
@@ -223,33 +144,26 @@
         }
     }
 
-    // Validação do formulário inicial
     function validarForm() {
         const n = document.getElementById("nomeCliente").value;
         const p = document.getElementById("numPedido").value;
-        const d = document.getElementById("proximoDesejo").value;
         const c = document.getElementById("checkLGPD").checked;
-
-        if (n.length < 2 || p.length < 1 || d.length < 2) { alert("Por favor, preencha todos os campos!"); return; }
-        if (!c) { alert("Você precisa aceitar os termos da LGPD para continuar."); return; }
-        
+        if (n.length < 2 || p.length < 1) { alert("Preencha seu nome e pedido!"); return; }
+        if (!c) { alert("Aceite os termos LGPD."); return; }
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
     }
 
-    // Função principal do giro
     function girar() {
         const btn = document.getElementById("spinBtn");
         btn.disabled = true; btn.innerText = "SORTEANDO...";
-
         const random = Math.random() * 100;
         let acumulado = 0; let sorteadoIndex = 0;
         for (let i = 0; i < premiosData.length; i++) {
             acumulado += premiosData[i].chance;
             if (random <= acumulado) { sorteadoIndex = i; break; }
         }
-
         const grausFatia = 360 / 5;
         const anguloSorteado = 360 - (sorteadoIndex * grausFatia);
         anguloAcumulado += (3600 + anguloSorteado - (grausFatia / 2));
@@ -264,88 +178,67 @@
             icone: premiosData[sorteadoIndex].icone
         };
 
-        localStorage.setItem("nostalgicas_vFinal_v3", JSON.stringify(objGanhador));
+        localStorage.setItem("nostalgicas_vFinal_v4", JSON.stringify(objGanhador));
         enviarParaPlanilha(objGanhador);
 
-        // Aguarda animação da roleta
         setTimeout(() => {
             confetti({ particleCount: 200, spread: 90, origin: { y: 0.7 } });
             exibirResultadoFinal(objGanhador);
         }, 5100);
     }
 
-    // Função de envio para o Google Sheets (concatenando nome do amigo no prêmio)
     function enviarParaPlanilha(dados) {
         const amigo = document.getElementById("nomeAmigo") ? document.getElementById("nomeAmigo").value : "";
-        const premioFinal = amigo ? `${dados.premio} (Amigo: ${amigo})` : dados.premio;
-
+        const premioFinal = amigo ? `${dados.premio} (Indicado: ${amigo})` : dados.premio;
         fetch("https://script.google.com/macros/s/AKfycbw6Btaxwl4P257YG-_0mGOsSeUNVDGz6NfXRgvD-Jfk-CBE7ikRwIhWMdO-BbdoMyp1Rg/exec", {
             method: "POST", mode: "no-cors",
-            body: JSON.stringify({
-                nome: dados.nome,
-                pedido: dados.pedido,
-                desejo: dados.desejo,
-                premio: premioFinal
-            })
+            body: JSON.stringify({ nome: dados.nome, pedido: dados.pedido, desejo: dados.desejo, premio: premioFinal })
         });
     }
 
-    // Exibe a tela final celebratória
     function exibirResultadoFinal(dados) {
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "none";
         document.getElementById("result").style.display = "block";
-        
-        // Define ícone e texto do prêmio no card
         document.getElementById("premioIcone").innerText = dados.icone;
         document.getElementById("prizeText").innerText = dados.premio;
         document.getElementById("prizeInfo").innerText = dados.desc;
-        
-        // Se for indicação, mostra o campo extra e muda o botão
-        if (dados.premio === "Cupom Indicação") {
-            document.getElementById("campoIndicado").style.display = "block";
-            document.getElementById("waLink").innerText = "1º PASSO: VALIDAR NO WHATSAPP";
-        }
+        if (dados.premio === "Cupom Indicação") { document.getElementById("campoIndicado").style.display = "block"; }
         atualizarLinkZap();
     }
 
-    // Lógica do Passo 2 (Mudar botão para envio ao amigo)
     function proximoPassoIndica() {
-        const dados = JSON.parse(localStorage.getItem("nostalgicas_vFinal_v3"));
+        const dados = JSON.parse(localStorage.getItem("nostalgicas_vFinal_v4"));
         const nomeAmigo = document.getElementById("nomeAmigo").value || "seu amigo";
-
         if (dados.premio === "Cupom Indicação" && passoIndica === 1) {
-            // Após o primeiro clique, aguarda 2s e muda o botão
             setTimeout(() => {
                 passoIndica = 2;
                 const btn = document.getElementById("waLink");
-                btn.innerText = `2º PASSO: ENVIAR PRESENTE PARA ${nomeAmigo.toUpperCase()}`;
-                btn.style.background = "#007bff"; // Azul para diferenciar
-                btn.style.shadow = "0 10px 25px rgba(0,123,255,0.4)";
-                document.getElementById("instrucaoPasso").innerText = "Agora clique acima para enviar o cupom direto para o seu amigo!";
+                btn.innerText = `2º PASSO: ENVIAR PARA ${nomeAmigo.toUpperCase()}`;
+                btn.style.background = "#007bff";
+                document.getElementById("instrucaoPasso").innerText = "Agora envie o presente para o seu amigo!";
                 atualizarLinkZap();
-            }, 2000);
+            }, 1500);
         }
     }
 
-    // Atualiza o link do WhatsApp (para a Loja ou para o Amigo)
     function atualizarLinkZap() {
-        const data = JSON.parse(localStorage.getItem("nostalgicas_vFinal_v3"));
+        const data = JSON.parse(localStorage.getItem("nostalgicas_vFinal_v4"));
         const nomeAmigo = document.getElementById("nomeAmigo").value || "______";
         const btn = document.getElementById("waLink");
         
         if (passoIndica === 1) {
-            // MENSAGEM PARA A NOSTÁLGICAS
+            // LINK PARA A LOJA (MENSAGEM DIRETA)
             let msgLoja = `Olá! Sou o(a) ${data.nome} e ganhei ${data.premio} na Roleta Nostálgicas!\n\nPedido: #${data.pedido}\nMeu próximo desejo: ${data.desejo}`;
-            if (data.premio === "Cupom Indicação") {
-                msgLoja += `\nIndico o presente para: ${nomeAmigo}`;
-                enviarParaPlanilha(data); // Re-envia com nome do amigo para a planilha
+            if (data.premio === "Cupom Indicação") { 
+                msgLoja += `\nIndico o presente para: ${nomeAmigo}`; 
+                enviarParaPlanilha(data);
             }
-            btn.href = "https://api.whatsapp.com/send?phone=559184711618&text=" + encodeURIComponent(msgLoja);
+            btn.href = `https://wa.me/message/U5MVBCCYBHLMF1?text=${encodeURIComponent(msgLoja)}`;
         } else {
-            // MENSAGEM PARA O AMIGO (Substitua o link do Insta pelo seu)
-            let msgAmigo = `Oi, ${nomeAmigo}! Ganhei um presente na Nostálgicas Personalizados e escolhi você para ganhar 10% de desconto também! 🎁\n\nDá uma olhadinha no trabalho deles, é lindo: https://www.instagram.com/nostalgicas.ar`;
-            btn.href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msgAmigo);
+            // LINK PARA O AMIGO (COMPARTILHAMENTO)
+            let msgAmigo = `Oi, ${nomeAmigo}! Ganhei um presente na Nostálgicas Personalizados e escolhi você para ganhar 10% de desconto também! 🎁\n\nDá uma olhadinha no trabalho deles, é lindo: https://www.instagram.com/nostalgicas.personalizados/`;
+            btn.href = `https://wa.me/?text=${encodeURIComponent(msgAmigo)}`;
         }
     }
 </script>
