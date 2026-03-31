@@ -65,9 +65,9 @@
 
     <div id="formInicial">
         <label>NÚMERO DO PEDIDO:</label>
-        <input type="text" id="numPedido" placeholder="Digite aqui...">
+        <input type="text" id="numPedido" placeholder="Ex: 1234">
         <label>O QUE VOCÊ DESEJA COMPRAR DEPOIS?</label>
-        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Álbum, Quadro...">
+        <input type="text" id="proximoDesejo" placeholder="Ex: Caneca, Álbum...">
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
     </div>
     
@@ -153,8 +153,8 @@
         anguloAcumulado += giroFinal;
         canvas.style.transform = `rotate(${anguloAcumulado}deg)`;
 
-        // --- ENVIO PARA A PLANILHA (SEU LINK OFICIAL) ---
-        const urlPlanilha = "https://script.google.com/macros/s/AKfycbynLLmw2xKmL2vpLb5jbGGvXC4NwdH-3P7yramN8UtH0mKEM7UpNsvkE6T_6a1ax-rlPg/exec";
+        // --- SEU NOVO LINK DO GOOGLE ---
+        const urlPlanilha = "https://script.google.com/macros/s/AKfycbw6Btaxwl4P257YG-_0mGOsSeUNVDGz6NfXRgvD-Jfk-CBE7ikRwIhWMdO-BbdoMyp1Rg/exec";
         
         fetch(urlPlanilha, {
             method: "POST",
