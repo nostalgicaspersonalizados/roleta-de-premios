@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -20,13 +20,28 @@
             background: #f4f4f4 url('fundotema.png') no-repeat center center fixed; 
             background-size: cover; text-align: center; font-family: 'Poppins', sans-serif;
             margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
         }
 
         .box { 
-            background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.88); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             max-width: 420px; width: 90%; padding: 35px 25px; border-radius: 40px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.4); 
             box-sizing: border-box;
+        }
+
+        /* Estilo para o aviso de suporte iOS */
+        .ios-hint {
+            display: none;
+            font-size: 11px;
+            color: #300870;
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ffeeba;
+            line-height: 1.4;
         }
 
         .logo-container img { max-width: 160px; margin-bottom: 5px; }
@@ -51,7 +66,7 @@
         #campoIndicado { display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 20px; }
         #nomeAmigo { padding: 15px; width: 100%; border-radius: 15px; border: none; text-align: center; font-weight: 700; outline: none; background: #fff; color: var(--azul-escuro); }
 
-        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; }
+        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; cursor: pointer; }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -84,6 +99,10 @@
     </div>
 
     <div id="result">
+        <div id="iosAlert" class="ios-hint">
+            💡 <b>Dica iPhone:</b> Se o WhatsApp não abrir automaticamente, certifique-se que o navegador está em modo móvel ou clique novamente.
+        </div>
+
         <div class="premio-card">
             <span id="premioIcone" style="font-size:55px; display:block; margin-bottom:15px;">🏆</span>
             <h3 id="prizeText"></h3>
@@ -93,7 +112,7 @@
                 <input type="text" id="nomeAmigo" placeholder="Quem ganhará?" oninput="atualizarLinkFinal()">
             </div>
         </div>
-        <a id="waLinkFinal" href="#" class="wa-btn" target="_blank" onclick="return verificarAcao(event)">1º PASSO: VALIDAR NO WHATSAPP</a>
+        <a id="waLinkFinal" href="#" class="wa-btn" onclick="verificarAcao(event)">1º PASSO: VALIDAR NO WHATSAPP</a>
     </div>
 </div>
 
@@ -111,7 +130,14 @@
     let passoGlobal = 1;
     let dadosGanhador = {};
 
+    // Detector de iOS para exibir o aviso
     window.onload = function() {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+            const alertBox = document.getElementById('iosAlert');
+            if(alertBox) alertBox.style.display = 'block';
+        }
+
         const jaJogou = localStorage.getItem("nostalgicas_v2026");
         if (jaJogou) {
             dadosGanhador = JSON.parse(jaJogou);
@@ -204,7 +230,6 @@
         if (passoGlobal === 1) {
             let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio}!\n\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
             if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Amigo Indicado: ${amigo}`;
-            // FORMATO WA.ME É O MAIS COMPATÍVEL COM IPHONE
             btn.href = `https://wa.me/5591984711618?text=${encodeURIComponent(texto)}`;
         } else {
             let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nInstagram: https://www.instagram.com/nostalgicas.personalizados/`;
@@ -213,18 +238,23 @@
     }
 
     function verificarAcao(e) {
-        // ESSA FUNÇÃO FORÇA A ABERTURA NO IPHONE
         const btn = document.getElementById("waLinkFinal");
         
+        // Impede o comportamento padrão para processar via JS (melhor para iOS)
+        e.preventDefault();
+
         if (dadosGanhador.premio === "Cupom Indicação") {
             const nomeAmigoVal = document.getElementById("nomeAmigo").value;
-            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a)!"); e.preventDefault(); return false; }
+            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a)!"); return false; }
             enviarDadosPlanilha(dadosGanhador);
         }
 
-        // Força a abertura do link em nova aba (ajuda no iOS)
-        window.open(btn.href, '_blank');
-        e.preventDefault(); 
+        const urlFinal = btn.href;
+        
+        // No iOS, redirecionar a janela atual costuma burlar o bloqueio de pop-ups do Safari
+        setTimeout(() => {
+            window.location.href = urlFinal;
+        }, 150);
 
         if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
             setTimeout(() => {
@@ -232,7 +262,7 @@
                 btn.innerText = "2º PASSO: ENVIAR PARA O AMIGO";
                 btn.style.background = "#007bff";
                 atualizarLinkFinal();
-            }, 1500);
+            }, 2500);
         }
         return false;
     }
