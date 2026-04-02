@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -47,18 +47,9 @@
         
         #result { display: none; margin-top: 10px; padding-top: 15px; border-top: 4px solid var(--amarelo); animation: slideUp 0.6s ease-out; }
 
-        /* MENSAGEM DE INSTRUÇÃO */
-        .instrucao-box {
-            background: #fff3cd; color: #856404; padding: 15px; border-radius: 20px;
-            font-size: 13px; font-weight: 600; margin-bottom: 15px; border: 1px solid #ffeeba;
-            display: none; line-height: 1.4;
-        }
+        .instrucao-box { background: #fff3cd; color: #856404; padding: 15px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 15px; border: 1px solid #ffeeba; display: none; line-height: 1.4; }
 
-        .ticket-confirmacao {
-            background: var(--gradiente-premio); border: 3px dashed var(--amarelo);
-            border-radius: 30px; padding: 30px 20px; margin-bottom: 20px; color: white;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2); text-align: center;
-        }
+        .ticket-confirmacao { background: var(--gradiente-premio); border: 3px dashed var(--amarelo); border-radius: 30px; padding: 30px 20px; margin-bottom: 20px; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
         .ticket-confirmacao h2 { font-family: 'Dancing Script', cursive; color: var(--amarelo); font-size: 30px; margin: 0 0 10px 0; }
         .ticket-item { margin: 10px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
         .ticket-label { font-size: 10px; text-transform: uppercase; opacity: 0.8; }
@@ -101,41 +92,30 @@
     </div>
 
     <div id="result">
-        <div id="msgInstrucao" class="instrucao-box">
-            📢 <b>Quase lá!</b> Tire um <b>print</b> deste bilhete e clique no botão abaixo para compartilhar comigo e com seu amigo(a)!
-        </div>
-
-        <div class="print-hint">📸 TIRE UM PRINT AGORA!</div>
+        <div id="msgInstrucao" class="instrucao-box">📢 <b>Quase lá!</b> Tire um <b>print</b> deste bilhete e clique no botão abaixo para compartilhar comigo e com o amigo(a) indicado!</div>
+        <div class="print-hint">📸 TIRE UM PRINT DO SEU BILHETE AGORA!</div>
         
         <div class="ticket-confirmacao">
             <h2>Nostálgicas</h2>
-            <div class="ticket-item">
-                <span class="ticket-label">Ganhador(a):</span>
-                <span class="ticket-value" id="resNome">---</span>
-            </div>
-            <div class="ticket-item">
-                <span class="ticket-label">Prêmio:</span>
-                <span class="ticket-value" id="resPremio">---</span>
-            </div>
-            <div id="campoIndicado">
-                <span class="ticket-label">Amigo(a) Indicado(a):</span>
-                <input type="text" id="nomeAmigo" placeholder="Nome de quem ganha 10%" oninput="atualizarLinkFinal()">
-            </div>
+            <div class="ticket-item"><span class="ticket-label">Ganhador(a):</span><span class="ticket-value" id="resNome">---</span></div>
+            <div class="ticket-item"><span class="ticket-label">Prêmio:</span><span class="ticket-value" id="resPremio">---</span></div>
+            <div id="campoIndicado"><span class="ticket-label">Amigo(a) Indicado(a):</span><input type="text" id="nomeAmigo" placeholder="Nome de quem ganha 10%" oninput="atualizarLinkFinal()"></div>
         </div>
         
-        <a id="waLinkFinal" href="#" class="wa-btn" onclick="return verificarAcao(event)">COMPARTILHAR COM NÓS DOIS</a>
+        <a id="waLinkFinal" href="#" class="wa-btn" onclick="return verificarAcao(event)">COMPARTILHAR PRINT E BILHETE</a>
     </div>
 </div>
 
 <script>
+    // URL que você enviou
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
     
     const premiosData = [
-        { name: "Cupom Indicação", chance: 45, color: "#faea60" },
-        { name: "Frete Grátis",    chance: 2,  color: "#fefefe" },
-        { name: "Mini Álbum",      chance: 5,  color: "#300870" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b" },
-        { name: "15% de Desconto", chance: 30, color: "#8c52ff" }
+        { name: "Cupom Indicação", chance: 45, color: "#faea60" }, 
+        { name: "Frete Grátis",    chance: 2,  color: "#fefefe" }, 
+        { name: "Mini Álbum",      chance: 5,  color: "#300870" }, 
+        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b" }, 
+        { name: "15% de Desconto", chance: 30, color: "#8c52ff" }  
     ];
 
     let anguloAcumulado = 0;
@@ -190,18 +170,17 @@
         btn.disabled = true;
 
         const random = Math.random() * 100;
-        let acumulado = 0;
-        let sorteadoIndex = 0;
+        let acumulado = 0; let sorteadoIndex = 0;
         for (let i = 0; i < premiosData.length; i++) {
             acumulado += premiosData[i].chance;
             if (random <= acumulado) { sorteadoIndex = i; break; }
         }
 
-        const grausPorFatia = 360 / 5;
+        const grausPorFatia = 72;
         const anguloAlvo = 360 - (sorteadoIndex * grausPorFatia);
         const ajusteCentro = grausPorFatia / 2;
+        
         anguloAcumulado += 3600 + anguloAlvo - ajusteCentro;
-
         document.getElementById("canvas").style.transform = `rotate(${anguloAcumulado}deg)`;
 
         dadosGanhador = {
@@ -238,7 +217,7 @@
     function atualizarLinkFinal() {
         const amigo = document.getElementById("nomeAmigo").value || "______";
         const btn = document.getElementById("waLinkFinal");
-        let texto = `🎁 *PRESENTE DA NOSTÁLGICAS!*\n\nEu ganhei na roleta e escolhi você para ganhar 10% de desconto também!\n\n👤 *Ganhador:* ${dadosGanhador.nome}\n🏆 *Prêmio:* ${dadosGanhador.premio}\n🎁 *Indicado:* ${amigo}\n\n📸 _(Estou enviando o print do meu bilhete aqui junto!)_`;
+        let texto = `🎁 *PRESENTE DA NOSTÁLGICAS!*\n\nEu ganhei na roleta e escolhi você para ganhar 10% de desconto também!\n\n👤 *Ganhador:* ${dadosGanhador.nome}\n🏆 *Prêmio:* ${dadosGanhador.premio}\n🎁 *Indicado:* ${amigo}\n\n📸 _(Estou enviando o print do meu bilhete em anexo!)_`;
         btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
     }
 
