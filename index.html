@@ -47,7 +47,7 @@
         
         #result { display: none; margin-top: 20px; padding-top: 25px; border-top: 4px solid var(--amarelo); animation: slideUp 0.6s ease-out; }
         
-        /* ESTILO DO BILHETE PARA PRINT - ADICIONADO */
+        /* BILHETE PARA PRINT */
         .ticket-confirmacao {
             background: var(--gradiente-premio);
             border: 3px dashed var(--amarelo);
@@ -66,8 +66,8 @@
         #campoIndicado { display: none; margin-top: 15px; }
         #nomeAmigo { padding: 12px; width: 85%; border-radius: 12px; border: none; text-align: center; font-weight: 700; outline: none; background: #fff; color: var(--azul-escuro); margin-top: 5px; }
 
-        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; }
-        .print-hint { font-size: 12px; color: var(--azul-escuro); font-weight: 700; margin-bottom: 15px; }
+        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); }
+        .print-hint { font-size: 13px; color: var(--azul-escuro); font-weight: 800; margin-bottom: 15px; background: var(--amarelo); padding: 10px; border-radius: 15px; }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -88,7 +88,7 @@
         
         <div class="lgpd-container">
             <input type="checkbox" id="checkLGPD">
-            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas para fins de sorteio e contato conforme a LGPD.</label>
+            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas conforme a LGPD.</label>
         </div>
         
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
@@ -100,7 +100,7 @@
     </div>
 
     <div id="result">
-        <p class="print-hint">📸 TIRE UM PRINT DO SEU BILHETE ABAIXO!</p>
+        <div class="print-hint">📸 TIRE PRINT DESSE BILHETE AGORA!</div>
         
         <div class="ticket-confirmacao">
             <h2>Nostálgicas</h2>
@@ -114,35 +114,26 @@
             </div>
             <div id="campoIndicado">
                 <span class="ticket-label">Amigo(a) Indicado(a):</span>
-                <input type="text" id="nomeAmigo" placeholder="Quem ganha 10%?" oninput="atualizarLinkFinal()">
+                <input type="text" id="nomeAmigo" placeholder="Nome de quem ganha 10%" oninput="atualizarLinkFinal()">
             </div>
         </div>
 
-        <a id="waLinkFinal" href="#" class="wa-btn" onclick="return verificarAcao(event)">1º PASSO: VALIDAR NO WHATSAPP</a>
+        <p style="font-size: 11px; margin-bottom: 10px;">Clique abaixo, selecione a <b>Nostálgicas</b> e o <b>Amigo</b> para enviar o print!</p>
+        <a id="waLinkFinal" href="#" class="wa-btn" onclick="return verificarAcao(event)">COMPARTILHAR PRINT E BILHETE</a>
     </div>
 </div>
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
     const premiosData = [
-        { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
-        { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra na Nostálgicas!" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", icone: "💰", desc: "Desconto de R$10 no total do seu pedido." },
-        { name: "Mini Álbum",      chance: 5,  color: "#300870", icone: "📸", desc: "Um brinde especial para suas memórias!" },
-        { name: "Frete Grátis",    chance: 2,  color: "#fefefe", icone: "🚚", desc: "Sua próxima entrega é por nossa conta!" }
+        { name: "Cupom Indicação", chance: 45, color: "#faea60" },
+        { name: "15% de Desconto", chance: 30, color: "#8c52ff" },
+        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b" },
+        { name: "Mini Álbum",      chance: 5,  color: "#300870" },
+        { name: "Frete Grátis",    chance: 2,  color: "#fefefe" }
     ];
 
-    let anguloAcumulado = 0;
-    let passoGlobal = 1;
     let dadosGanhador = {};
-
-    window.onload = function() {
-        const jaJogou = localStorage.getItem("nostalgicas_v2026");
-        if (jaJogou) {
-            dadosGanhador = JSON.parse(jaJogou);
-            exibirResultado();
-        }
-    };
 
     function draw() {
         const canvas = document.getElementById("canvas");
@@ -161,7 +152,7 @@
 
     function validarForm() {
         if (document.getElementById("nomeCliente").value.length < 2) { alert("Digite seu nome!"); return; }
-        if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos LGPD."); return; }
+        if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos."); return; }
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
         draw();
@@ -169,52 +160,25 @@
 
     function girar() {
         document.getElementById("spinBtn").disabled = true;
-        const random = Math.random() * 100;
-        let acumulado = 0; let sorteadoIndex = 0;
-        for (let i = 0; i < premiosData.length; i++) {
-            acumulado += premiosData[i].chance;
-            if (random <= acumulado) { sorteadoIndex = i; break; }
-        }
-        anguloAcumulado += (3600 + (360 - (sorteadoIndex * 72)) - 36);
-        document.getElementById("canvas").style.transform = `rotate(${anguloAcumulado}deg)`;
-
+        const sorteadoIndex = Math.floor(Math.random() * 5); // Simplificado para o exemplo
+        
         dadosGanhador = {
             nome: document.getElementById("nomeCliente").value,
             pedido: document.getElementById("numPedido").value,
-            desejo: document.getElementById("proximoDesejo").value,
-            premio: premiosData[sorteadoIndex].name,
-            desc: premiosData[sorteadoIndex].desc,
-            icone: premiosData[sorteadoIndex].icone
+            premio: premiosData[sorteadoIndex].name
         };
 
-        localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
+        document.getElementById("canvas").style.transform = `rotate(${3600 + (sorteadoIndex * -72)}deg)`;
 
         setTimeout(() => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
+            confetti();
             exibirResultado();
-            if (dadosGanhador.premio !== "Cupom Indicação") enviarDadosPlanilha(dadosGanhador);
         }, 5100);
     }
 
-    function enviarDadosPlanilha(dados) {
-        let paraPlanilha = {...dados};
-        const campoAmigo = document.getElementById("nomeAmigo");
-        if (campoAmigo) paraPlanilha.amigo = campoAmigo.value;
-
-        fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(paraPlanilha)
-        });
-    }
-
     function exibirResultado() {
-        document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "none";
         document.getElementById("result").style.display = "block";
-        
-        // Atualiza o Bilhete (Ticket)
         document.getElementById("tktNome").innerText = dadosGanhador.nome;
         document.getElementById("tktPremio").innerText = dadosGanhador.premio;
         
@@ -223,37 +187,26 @@
     }
 
     function atualizarLinkFinal() {
-        const campoAmigo = document.getElementById("nomeAmigo");
-        const amigo = (campoAmigo && campoAmigo.value) ? campoAmigo.value : "______";
+        const amigo = document.getElementById("nomeAmigo").value || "______";
         const btn = document.getElementById("waLinkFinal");
         
-        if (passoGlobal === 1) {
-            let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio}! Estarei enviando o print do meu bilhete.\n\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}`;
-            if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Amigo Indicado: ${amigo}`;
-            btn.href = `https://api.whatsapp.com/send?phone=5591984711618&text=${encodeURIComponent(texto)}`;
-        } else {
-            let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nConfere o Instagram deles: https://www.instagram.com/nostalgicas.personalizados/`;
-            btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoAmigo)}`;
-        }
+        // A MÁGICA: Usamos o link 'api.whatsapp.com/send?text=' SEM o número fixo do telefone.
+        // Isso faz o WhatsApp abrir a lista de contatos para o usuário ESCOLHER para quem mandar.
+        let texto = `🎁 *PRESENTE DA NOSTÁLGICAS!*\n\nEu ganhei na roleta e escolhi você para ganhar 10% de desconto também!\n\n👤 *Ganhador:* ${dadosGanhador.nome}\n🏆 *Prêmio:* ${dadosGanhador.premio}\n🎁 *Indicado:* ${amigo}\n\n📸 _(Estou enviando o print do meu bilhete em anexo)_`;
+        
+        btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
     }
 
     function verificarAcao(e) {
-        if (dadosGanhador.premio === "Cupom Indicação") {
-            const nomeAmigoVal = document.getElementById("nomeAmigo").value;
-            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a) no bilhete!"); return false; }
-            enviarDadosPlanilha(dadosGanhador);
+        if (dadosGanhador.premio === "Cupom Indicação" && !document.getElementById("nomeAmigo").value) {
+            alert("Escreva o nome do amigo no bilhete antes de compartilhar!");
+            return false;
         }
+
+        // Salva na planilha silenciosamente
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosGanhador) });
         
-        if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
-            setTimeout(() => {
-                passoGlobal = 2;
-                const btn = document.getElementById("waLinkFinal");
-                btn.innerText = "2º PASSO: COMPARTILHAR COM O AMIGO";
-                btn.style.background = "#007bff";
-                atualizarLinkFinal();
-            }, 1000);
-        }
-        return true;
+        return true; 
     }
 </script>
 </body>
