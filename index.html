@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -46,7 +46,7 @@
         .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid var(--dourado); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
         
         #result { display: none; margin-top: 20px; padding-top: 25px; border-top: 4px solid var(--amarelo); animation: slideUp 0.6s ease-out; }
-        
+
         /* BILHETE PARA PRINT */
         .ticket-confirmacao {
             background: var(--gradiente-premio);
@@ -66,9 +66,9 @@
         #campoIndicado { display: none; margin-top: 15px; }
         #nomeAmigo { padding: 12px; width: 85%; border-radius: 12px; border: none; text-align: center; font-weight: 700; outline: none; background: #fff; color: var(--azul-escuro); margin-top: 5px; }
 
-        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); }
-        .print-hint { font-size: 13px; color: var(--azul-escuro); font-weight: 800; margin-bottom: 15px; background: var(--amarelo); padding: 10px; border-radius: 15px; }
-        
+        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; }
+        .print-hint { font-size: 12px; color: var(--azul-escuro); font-weight: 800; margin-bottom: 15px; background: var(--amarelo); padding: 10px; border-radius: 15px; }
+
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -88,7 +88,7 @@
         
         <div class="lgpd-container">
             <input type="checkbox" id="checkLGPD">
-            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas conforme a LGPD.</label>
+            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas para fins de sorteio e contato.</label>
         </div>
         
         <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
@@ -100,25 +100,25 @@
     </div>
 
     <div id="result">
-        <div class="print-hint">📸 TIRE PRINT DESSE BILHETE AGORA!</div>
+        <div class="print-hint">📸 TIRE UM PRINT DO SEU BILHETE AGORA!</div>
         
-        <div class="ticket-confirmacao">
+        <div class="ticket-confirmacao" id="ticketPrint">
             <h2>Nostálgicas</h2>
             <div class="ticket-item">
                 <span class="ticket-label">Ganhador(a):</span>
-                <span class="ticket-value" id="tktNome">---</span>
+                <span class="ticket-value" id="resNome">---</span>
             </div>
             <div class="ticket-item">
-                <span class="ticket-label">Prêmio:</span>
-                <span class="ticket-value" id="tktPremio">---</span>
+                <span class="ticket-label">Prêmio Conquistado:</span>
+                <span class="ticket-value" id="resPremio">---</span>
             </div>
             <div id="campoIndicado">
                 <span class="ticket-label">Amigo(a) Indicado(a):</span>
-                <input type="text" id="nomeAmigo" placeholder="Nome de quem ganha 10%" oninput="atualizarLinkFinal()">
+                <input type="text" id="nomeAmigo" placeholder="Quem ganha 10%?" oninput="atualizarLinkFinal()">
             </div>
         </div>
 
-        <p style="font-size: 11px; margin-bottom: 10px;">Clique abaixo, selecione a <b>Nostálgicas</b> e o <b>Amigo</b> para enviar o print!</p>
+        <p style="font-size: 11px; margin-bottom: 10px;">Selecione a <b>Nostálgicas</b> e o <b>Amigo</b> para enviar!</p>
         <a id="waLinkFinal" href="#" class="wa-btn" onclick="return verificarAcao(event)">COMPARTILHAR PRINT E BILHETE</a>
     </div>
 </div>
@@ -133,7 +133,17 @@
         { name: "Frete Grátis",    chance: 2,  color: "#fefefe" }
     ];
 
+    let anguloAcumulado = 0;
     let dadosGanhador = {};
+
+    // TRAVA DE SEGURANÇA: Se já jogou, pula direto pro resultado
+    window.onload = function() {
+        const jaJogou = localStorage.getItem("nostalgicas_v2026");
+        if (jaJogou) {
+            dadosGanhador = JSON.parse(jaJogou);
+            exibirResultado();
+        }
+    };
 
     function draw() {
         const canvas = document.getElementById("canvas");
@@ -159,30 +169,51 @@
     }
 
     function girar() {
-        document.getElementById("spinBtn").disabled = true;
-        const sorteadoIndex = Math.floor(Math.random() * 5); // Simplificado para o exemplo
+        if (localStorage.getItem("nostalgicas_v2026")) return; // Segunda trava
         
+        const btn = document.getElementById("spinBtn");
+        btn.disabled = true;
+
+        // SORTEIO REAL
+        const random = Math.random() * 100;
+        let acumulado = 0; let sorteadoIndex = 0;
+        for (let i = 0; i < premiosData.length; i++) {
+            acumulado += premiosData[i].chance;
+            if (random <= acumulado) { sorteadoIndex = i; break; }
+        }
+
+        // CÁLCULO PRECISO DO ÂNGULO
+        const anguloDaFatia = (sorteadoIndex * 72);
+        anguloAcumulado += 3600 + (360 - anguloDaFatia);
+        document.getElementById("canvas").style.transform = `rotate(${anguloAcumulado}deg)`;
+
         dadosGanhador = {
             nome: document.getElementById("nomeCliente").value,
             pedido: document.getElementById("numPedido").value,
             premio: premiosData[sorteadoIndex].name
         };
 
-        document.getElementById("canvas").style.transform = `rotate(${3600 + (sorteadoIndex * -72)}deg)`;
+        // SALVA PARA BLOQUEAR RE-GIRO
+        localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
 
         setTimeout(() => {
-            confetti();
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             exibirResultado();
+            if (dadosGanhador.premio !== "Cupom Indicação") enviarDadosPlanilha(dadosGanhador);
         }, 5100);
     }
 
     function exibirResultado() {
+        document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "none";
         document.getElementById("result").style.display = "block";
-        document.getElementById("tktNome").innerText = dadosGanhador.nome;
-        document.getElementById("tktPremio").innerText = dadosGanhador.premio;
         
-        if (dadosGanhador.premio === "Cupom Indicação") document.getElementById("campoIndicado").style.display = "block";
+        document.getElementById("resNome").innerText = dadosGanhador.nome;
+        document.getElementById("resPremio").innerText = dadosGanhador.premio;
+
+        if (dadosGanhador.premio === "Cupom Indicação") {
+            document.getElementById("campoIndicado").style.display = "block";
+        }
         atualizarLinkFinal();
     }
 
@@ -190,23 +221,24 @@
         const amigo = document.getElementById("nomeAmigo").value || "______";
         const btn = document.getElementById("waLinkFinal");
         
-        // A MÁGICA: Usamos o link 'api.whatsapp.com/send?text=' SEM o número fixo do telefone.
-        // Isso faz o WhatsApp abrir a lista de contatos para o usuário ESCOLHER para quem mandar.
         let texto = `🎁 *PRESENTE DA NOSTÁLGICAS!*\n\nEu ganhei na roleta e escolhi você para ganhar 10% de desconto também!\n\n👤 *Ganhador:* ${dadosGanhador.nome}\n🏆 *Prêmio:* ${dadosGanhador.premio}\n🎁 *Indicado:* ${amigo}\n\n📸 _(Estou enviando o print do meu bilhete em anexo)_`;
         
         btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
     }
 
-    function verificarAcao(e) {
-        if (dadosGanhador.premio === "Cupom Indicação" && !document.getElementById("nomeAmigo").value) {
-            alert("Escreva o nome do amigo no bilhete antes de compartilhar!");
-            return false;
-        }
+    function enviarDadosPlanilha(dados) {
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) });
+    }
 
-        // Salva na planilha silenciosamente
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosGanhador) });
-        
-        return true; 
+    function verificarAcao(e) {
+        if (dadosGanhador.premio === "Cupom Indicação") {
+            if (!document.getElementById("nomeAmigo").value) {
+                alert("Digite o nome do seu amigo no bilhete!");
+                return false;
+            }
+            enviarDadosPlanilha(dadosGanhador);
+        }
+        return true;
     }
 </script>
 </body>
