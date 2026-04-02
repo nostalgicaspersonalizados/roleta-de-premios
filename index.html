@@ -111,7 +111,6 @@
     let passoGlobal = 1;
     let dadosGanhador = {};
 
-    // TRAVA DE SEGURANÇA: Se já jogou, pula pro resultado
     window.onload = function() {
         const jaJogou = localStorage.getItem("nostalgicas_v2026");
         if (jaJogou) {
@@ -164,7 +163,6 @@
             amigo: ""
         };
 
-        // SALVA O RESULTADO PARA BLOQUEAR O RE-GIRO
         localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
 
         setTimeout(() => {
@@ -206,7 +204,8 @@
         if (passoGlobal === 1) {
             let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio}!\n\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
             if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Amigo Indicado: ${amigo}`;
-            btn.href = `https://api.whatsapp.com/send?phone=5591984711618&text=${encodeURIComponent(texto)}`;
+            // FORMATO WA.ME É O MAIS COMPATÍVEL COM IPHONE
+            btn.href = `https://wa.me/5591984711618?text=${encodeURIComponent(texto)}`;
         } else {
             let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nInstagram: https://www.instagram.com/nostalgicas.personalizados/`;
             btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoAmigo)}`;
@@ -214,21 +213,28 @@
     }
 
     function verificarAcao(e) {
+        // ESSA FUNÇÃO FORÇA A ABERTURA NO IPHONE
+        const btn = document.getElementById("waLinkFinal");
+        
         if (dadosGanhador.premio === "Cupom Indicação") {
             const nomeAmigoVal = document.getElementById("nomeAmigo").value;
-            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a)!"); return false; }
+            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a)!"); e.preventDefault(); return false; }
             enviarDadosPlanilha(dadosGanhador);
         }
+
+        // Força a abertura do link em nova aba (ajuda no iOS)
+        window.open(btn.href, '_blank');
+        e.preventDefault(); 
+
         if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
             setTimeout(() => {
                 passoGlobal = 2;
-                const btn = document.getElementById("waLinkFinal");
                 btn.innerText = "2º PASSO: ENVIAR PARA O AMIGO";
                 btn.style.background = "#007bff";
                 atualizarLinkFinal();
-            }, 1000);
+            }, 1500);
         }
-        return true;
+        return false;
     }
 </script>
 </body>
