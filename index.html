@@ -5,266 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Roleta VIP - Nostálgicas</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        :root { 
-            --azul-escuro: #300870;
-            --roxo-logo: #8c52ff;
-            --amarelo: #faea60;
-            --dourado: #ffb11b;
-            --gradiente-premio: linear-gradient(135deg, #8c52ff 0%, #ffb11b 100%);
-        }
+        :root { --roxo: #8c52ff; --azul: #300870; --dourado: #ffb11b; --amarelo: #faea60; }
+        body { background: #f4f4f4 url('fundotema.png') no-repeat center center fixed; background-size: cover; font-family: 'Poppins', sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        
+        .box { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); max-width: 400px; width: 90%; padding: 25px; border-radius: 35px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: center; }
 
-        body { 
-            background: #f4f4f4 url('fundotema.png') no-repeat center center fixed; 
-            background-size: cover; text-align: center; font-family: 'Poppins', sans-serif;
-            margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        .box { 
-            background: rgba(255, 255, 255, 0.88); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            max-width: 420px; width: 90%; padding: 35px 25px; border-radius: 40px; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.4); 
-            box-sizing: border-box;
-        }
-
-        /* Estilo para o aviso de suporte iOS */
-        .ios-hint {
+        /* CARD DE PRINT (O BILHETE) */
+        #ticketPremio {
             display: none;
-            font-size: 11px;
-            color: #300870;
-            background: #fff3cd;
-            padding: 10px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ffeeba;
-            line-height: 1.4;
+            background: linear-gradient(135deg, var(--roxo), var(--azul));
+            color: white;
+            padding: 25px;
+            border-radius: 25px;
+            border: 3px dashed var(--amarelo);
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(140,82,255,0.3);
         }
 
-        .logo-container img { max-width: 160px; margin-bottom: 5px; }
-        .subtitle { font-family: 'Dancing Script', cursive; font-size: 24px; color: var(--roxo-logo); margin-bottom: 25px; font-weight: 700; }
-        
-        #formInicial label { display: block; text-align: left; margin: 12px 0 4px 25px; font-weight: 600; font-size: 11px; color: var(--azul-escuro); text-transform: uppercase; letter-spacing: 1px; }
-        #formInicial input { padding: 15px; width: 90%; border: 2px solid rgba(0,0,0,0.05); border-radius: 18px; margin-bottom: 8px; outline: none; box-sizing: border-box; background: rgba(255,255,255,0.9); }
+        #ticketPremio h2 { font-family: 'Dancing Script', cursive; font-size: 32px; margin: 0; color: var(--amarelo); }
+        .ticket-info { font-size: 14px; margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; }
+        .ticket-info b { color: var(--amarelo); font-size: 18px; }
 
-        .lgpd-container { display: flex; align-items: flex-start; justify-content: center; margin: 15px 10px; gap: 10px; text-align: left; }
-        .lgpd-container input { margin-top: 4px; transform: scale(1.3); cursor: pointer; }
-        .lgpd-container label { margin: 0; font-size: 10px; color: #555; line-height: 1.4; cursor: pointer; }
+        .btn-main { padding: 18px; width: 100%; border-radius: 20px; border: none; background: linear-gradient(135deg, var(--roxo), #6a32cc); color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn-wa { background: #25d366; }
 
-        .btn-main { padding: 20px; width: 90%; font-size: 18px; font-weight: 800; background: linear-gradient(135deg, var(--roxo-logo), #6a32cc); color: white; border: none; border-radius: 20px; cursor: pointer; text-transform: uppercase; box-shadow: 0 10px 25px rgba(140,82,255,0.4); }
-
-        .canvas-wrap { position: relative; width: 280px; height: 280px; margin: 25px auto; }
-        #canvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--azul-escuro); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); background: #fff; }
-        .pointer { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid var(--dourado); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        #canvas { width: 280px; height: 280px; border-radius: 50%; border: 8px solid var(--azul); transition: transform 5s cubic-bezier(0.1, 0, 0.2, 1); margin: 20px 0; }
+        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid #ddd; box-sizing: border-box; font-family: 'Poppins'; }
         
-        #result { display: none; margin-top: 20px; padding-top: 25px; border-top: 4px solid var(--amarelo); animation: slideUp 0.6s ease-out; }
-        .premio-card { background: var(--gradiente-premio); border-radius: 30px; padding: 30px 20px; margin-bottom: 20px; border: 3px solid var(--dourado); color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        
-        #campoIndicado { display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 20px; }
-        #nomeAmigo { padding: 15px; width: 100%; border-radius: 15px; border: none; text-align: center; font-weight: 700; outline: none; background: #fff; color: var(--azul-escuro); }
-
-        .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; cursor: pointer; }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .hint-print { font-size: 11px; color: #666; margin-top: 10px; background: #eee; padding: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <div class="logo-container"><img src="NOSTÁLGICAS (1).png" alt="Logo Nostálgicas"></div>
-    <p class="subtitle">Arte, Lembranças e amor</p>
-
     <div id="formInicial">
-        <label>COMO PODEMOS TE CHAMAR?</label>
+        <img src="logo.png" style="max-width: 140px; margin-bottom: 10px;">
         <input type="text" id="nomeCliente" placeholder="Seu nome">
-        <label>NÚMERO DO PEDIDO:</label>
-        <input type="text" id="numPedido" placeholder="Digite o número...">
-        <label>PRÓXIMO DESEJO:</label>
-        <input type="text" id="proximoDesejo" placeholder="O que pretende comprar?">
-        
-        <div class="lgpd-container">
-            <input type="checkbox" id="checkLGPD">
-            <label for="checkLGPD">Autorizo o uso dos meus dados pela Nostálgicas para fins de sorteio e contato conforme a LGPD.</label>
-        </div>
-        
-        <button class="btn-main" onclick="validarForm()">LIBERAR MEU GIRO</button>
+        <input type="text" id="numPedido" placeholder="Nº do Pedido">
+        <button class="btn-main" onclick="validarForm()">Liberar Giro</button>
     </div>
-    
+
     <div id="areaRoleta" style="display:none;">
-        <div class="canvas-wrap"><div class="pointer"></div><canvas id="canvas" width="500" height="500"></canvas></div>
+        <canvas id="canvas" width="500" height="500"></canvas>
         <button id="spinBtn" class="btn-main" onclick="girar()">GIRAR AGORA!</button>
     </div>
 
-    <div id="result">
-        <div id="iosAlert" class="ios-hint">
-            💡 <b>Dica iPhone:</b> Se o WhatsApp não abrir automaticamente, certifique-se que o navegador está em modo móvel ou clique novamente.
+    <div id="result" style="display:none;">
+        <h3 style="color: var(--roxo); margin-bottom: 5px;">🎉 PARABÉNS!</h3>
+        
+        <div id="campoAmigo" style="margin-bottom: 15px;">
+            <p style="font-size: 12px; font-weight: 600;">Quem você quer presentear?</p>
+            <input type="text" id="nomeAmigo" placeholder="Nome do Amigo(a)" oninput="gerarTicket()">
         </div>
 
-        <div class="premio-card">
-            <span id="premioIcone" style="font-size:55px; display:block; margin-bottom:15px;">🏆</span>
-            <h3 id="prizeText"></h3>
-            <p id="prizeInfo"></p>
-            <div id="campoIndicado">
-                <label style="font-weight: 800; font-size: 12px; margin-bottom: 8px; display: block; color: white;">NOME DO AMIGO(A) INDICADO:</label>
-                <input type="text" id="nomeAmigo" placeholder="Quem ganhará?" oninput="atualizarLinkFinal()">
+        <div id="ticketPremio">
+            <h2>Nostálgicas</h2>
+            <div class="ticket-info">
+                GANHADOR: <br><b id="tktNome">---</b><br><br>
+                PRÊMIO: <br><b id="tktPremio">---</b><br><br>
+                INDICADO: <br><b id="tktAmigo">---</b>
             </div>
+            <p style="font-size: 9px; opacity: 0.8;">Válido mediante apresentação deste print e confirmação do pedido.</p>
         </div>
-        <a id="waLinkFinal" href="#" class="wa-btn" onclick="verificarAcao(event)">1º PASSO: VALIDAR NO WHATSAPP</a>
+
+        <p class="hint-print">📸 <b>Tire um print da imagem acima agora!</b></p>
+
+        <button class="btn-main btn-wa" onclick="finalizarFluxo()">ENVIAR PRINT NO WHATSAPP</button>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyD1zxy76BfS5Zc-6rjwK290fsq_cIFv9lrMvR7XQXqjs6YI5ph-wOgMBYoeXa0pCWLuQ/exec';
-    const premiosData = [
-        { name: "Cupom Indicação", chance: 45, color: "#faea60", icone: "🎁", desc: "Ganhe 10% de desconto indicando um amigo!" },
-        { name: "15% de Desconto", chance: 30, color: "#8c52ff", icone: "🎉", desc: "Use na sua próxima compra na Nostálgicas!" },
-        { name: "R$ 10 OFF",       chance: 18, color: "#ffb11b", icone: "💰", desc: "Desconto de R$10 no total do seu pedido." },
-        { name: "Mini Álbum",      chance: 5,  color: "#300870", icone: "📸", desc: "Um brinde especial para suas memórias!" },
-        { name: "Frete Grátis",    chance: 2,  color: "#fefefe", icone: "🚚", desc: "Sua próxima entrega é por nossa conta!" }
-    ];
-
-    let anguloAcumulado = 0;
-    let passoGlobal = 1;
-    let dadosGanhador = {};
-
-    // Detector de iOS para exibir o aviso
-    window.onload = function() {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (isIOS) {
-            const alertBox = document.getElementById('iosAlert');
-            if(alertBox) alertBox.style.display = 'block';
-        }
-
-        const jaJogou = localStorage.getItem("nostalgicas_v2026");
-        if (jaJogou) {
-            dadosGanhador = JSON.parse(jaJogou);
-            exibirResultado();
-        }
-    };
-
-    function draw() {
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-        const fatia = (2 * Math.PI) / 5;
-        ctx.clearRect(0, 0, 500, 500);
-        for (let i = 0; i < 5; i++) {
-            ctx.save(); ctx.beginPath(); ctx.fillStyle = premiosData[i].color;
-            ctx.moveTo(250, 250); ctx.arc(250, 250, 250, i * fatia - Math.PI/2, (i + 1) * fatia - Math.PI/2);
-            ctx.fill(); ctx.stroke(); ctx.restore();
-            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * fatia + fatia / 2 - Math.PI / 2);
-            ctx.fillStyle = (i === 1 || i === 3) ? "#fff" : "#300870"; 
-            ctx.textAlign = "right"; ctx.font = "bold 22px Arial"; ctx.fillText(premiosData[i].name, 230, 8); ctx.restore();
-        }
-    }
+    const scriptURL = 'https://script.google.com/macros/s/SUA_URL_AQUI/exec';
+    let dados = {};
 
     function validarForm() {
-        if (document.getElementById("nomeCliente").value.length < 2) { alert("Digite seu nome!"); return; }
-        if (!document.getElementById("checkLGPD").checked) { alert("Aceite os termos LGPD."); return; }
+        if(!document.getElementById("nomeCliente").value) return alert("Seu nome?");
         document.getElementById("formInicial").style.display = "none";
         document.getElementById("areaRoleta").style.display = "block";
-        draw();
+        desenharRoleta();
+    }
+
+    function desenharRoleta() {
+        const ctx = document.getElementById("canvas").getContext("2d");
+        const cores = ["#8c52ff", "#faea60", "#ffb11b", "#300870", "#ffffff"];
+        const nomes = ["Indicação", "15% OFF", "R$ 10 OFF", "Mini Álbum", "Frete Grátis"];
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath(); ctx.fillStyle = cores[i]; ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 250, i * 1.256, (i + 1) * 1.256); ctx.fill();
+        }
     }
 
     function girar() {
         document.getElementById("spinBtn").disabled = true;
-        const random = Math.random() * 100;
-        let acumulado = 0; let sorteadoIndex = 0;
-        for (let i = 0; i < premiosData.length; i++) {
-            acumulado += premiosData[i].chance;
-            if (random <= acumulado) { sorteadoIndex = i; break; }
-        }
-        anguloAcumulado += (3600 + (360 - (sorteadoIndex * 72)) - 36);
-        document.getElementById("canvas").style.transform = `rotate(${anguloAcumulado}deg)`;
-
-        dadosGanhador = {
+        const sorteio = "Cupom Indicação"; // Aqui entra sua lógica de sorteio real
+        document.getElementById("canvas").style.transform = "rotate(3600deg)";
+        
+        dados = {
             nome: document.getElementById("nomeCliente").value,
             pedido: document.getElementById("numPedido").value,
-            desejo: document.getElementById("proximoDesejo").value,
-            premio: premiosData[sorteadoIndex].name,
-            desc: premiosData[sorteadoIndex].desc,
-            icone: premiosData[sorteadoIndex].icone,
-            amigo: ""
+            premio: sorteio
         };
 
-        localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
-
         setTimeout(() => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
-            exibirResultado();
-            if (dadosGanhador.premio !== "Cupom Indicação") enviarDadosPlanilha(dadosGanhador);
-        }, 5100);
+            confetti();
+            document.getElementById("areaRoleta").style.display = "none";
+            document.getElementById("result").style.display = "block";
+            document.getElementById("ticketPremio").style.display = "block";
+            gerarTicket();
+        }, 5000);
     }
 
-    function enviarDadosPlanilha(dados) {
-        let paraPlanilha = {...dados};
-        const campoAmigo = document.getElementById("nomeAmigo");
-        if (campoAmigo) paraPlanilha.amigo = campoAmigo.value;
-
-        fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(paraPlanilha)
-        });
+    function gerarTicket() {
+        const amigo = document.getElementById("nomeAmigo").value || "______";
+        document.getElementById("tktNome").innerText = dados.nome;
+        document.getElementById("tktPremio").innerText = dados.premio;
+        document.getElementById("tktAmigo").innerText = amigo;
+        dados.amigo = amigo;
     }
 
-    function exibirResultado() {
-        document.getElementById("formInicial").style.display = "none";
-        document.getElementById("areaRoleta").style.display = "none";
-        document.getElementById("result").style.display = "block";
-        document.getElementById("prizeText").innerText = dadosGanhador.premio;
-        document.getElementById("prizeInfo").innerText = dadosGanhador.desc;
-        document.getElementById("premioIcone").innerText = dadosGanhador.icone;
-        if (dadosGanhador.premio === "Cupom Indicação") document.getElementById("campoIndicado").style.display = "block";
-        atualizarLinkFinal();
-    }
+    function finalizarFluxo() {
+        // Envia para a planilha silenciosamente
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) });
 
-    function atualizarLinkFinal() {
-        const campoAmigo = document.getElementById("nomeAmigo");
-        const amigo = (campoAmigo && campoAmigo.value) ? campoAmigo.value : "______";
-        const btn = document.getElementById("waLinkFinal");
+        const msg = `Olá! Acabei de ganhar na roleta! Aqui está o print do meu bilhete.\n\nPrêmio: ${dados.premio}\nIndicado: ${dados.amigo}`;
         
-        if (passoGlobal === 1) {
-            let texto = `Olá Nostálgicas! Sou ${dadosGanhador.nome} e ganhei ${dadosGanhador.premio}!\n\n👤 Nome: ${dadosGanhador.nome}\n📦 Pedido: #${dadosGanhador.pedido}\n✨ Desejo: ${dadosGanhador.desejo}`;
-            if (dadosGanhador.premio === "Cupom Indicação") texto += `\n🎁 Amigo Indicado: ${amigo}`;
-            btn.href = `https://wa.me/5591984711618?text=${encodeURIComponent(texto)}`;
-        } else {
-            let textoAmigo = `Oi, ${amigo}! Ganhei um presente na Nostálgicas e escolhi você para ganhar 10% de desconto também! 🎁\n\nInstagram: https://www.instagram.com/nostalgicas.personalizados/`;
-            btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoAmigo)}`;
-        }
-    }
-
-    function verificarAcao(e) {
-        const btn = document.getElementById("waLinkFinal");
-        
-        // Impede o comportamento padrão para processar via JS (melhor para iOS)
-        e.preventDefault();
-
-        if (dadosGanhador.premio === "Cupom Indicação") {
-            const nomeAmigoVal = document.getElementById("nomeAmigo").value;
-            if (!nomeAmigoVal) { alert("Por favor, digite o nome do seu amigo(a)!"); return false; }
-            enviarDadosPlanilha(dadosGanhador);
-        }
-
-        const urlFinal = btn.href;
-        
-        // No iOS, redirecionar a janela atual costuma burlar o bloqueio de pop-ups do Safari
-        setTimeout(() => {
-            window.location.href = urlFinal;
-        }, 150);
-
-        if (dadosGanhador.premio === "Cupom Indicação" && passoGlobal === 1) {
-            setTimeout(() => {
-                passoGlobal = 2;
-                btn.innerText = "2º PASSO: ENVIAR PARA O AMIGO";
-                btn.style.background = "#007bff";
-                atualizarLinkFinal();
-            }, 2500);
-        }
-        return false;
+        // Abre o WhatsApp da loja para ele enviar o print
+        window.location.href = `https://wa.me/5591984711618?text=${encodeURIComponent(msg)}`;
     }
 </script>
 </body>
