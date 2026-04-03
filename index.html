@@ -60,6 +60,7 @@
         #nomeAmigo { padding: 12px; width: 85%; border-radius: 12px; border: none; text-align: center; font-weight: 700; outline: none; background: #fff; color: var(--azul-escuro); margin-top: 5px; }
 
         .wa-btn { display: inline-block; padding: 22px; background: #25d366; color: white; text-decoration: none; border-radius: 22px; font-weight: 800; width: 90%; text-transform: uppercase; font-size: 13px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); }
+        .wa-btn.disabled { background: #888; cursor: not-allowed; box-shadow: none; }
         .print-hint { font-size: 12px; color: var(--azul-escuro); font-weight: 800; margin-bottom: 10px; background: var(--amarelo); padding: 8px; border-radius: 12px; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
@@ -104,10 +105,13 @@
                 <span class="ticket-desc" id="resDesc"></span>
                 <span class="ticket-validade" id="resValidade"></span>
             </div>
-            <div id="campoIndicado"><span class="ticket-label">Amigo(a) Indicado(a):</span><input type="text" id="nomeAmigo" placeholder="Nome de quem ganha 10%" oninput="atualizarLinkFinal()"></div>
+            <div id="campoIndicado">
+                <span class="ticket-label">Amigo(a) Indicado(a):</span>
+                <input type="text" id="nomeAmigo" placeholder="Nome de quem ganha 10%" oninput="atualizarLinkFinal()">
+            </div>
         </div>
         
-        <a id="waLinkFinal" href="#" class="wa-btn" onclick="return verificarAcao(event)">COMPARTILHAR BILHETE</a>
+        <a id="waLinkFinal" href="#" target="_blank" rel="noopener" class="wa-btn" onclick="return verificarAcao(event)">COMPARTILHAR BILHETE</a>
     </div>
 </div>
 
@@ -124,6 +128,7 @@
 
     let anguloAcumulado = 0;
     let dadosGanhador = {};
+    let enviadoParaPlanilha = false;
 
     function draw() {
         const canvas = document.getElementById("canvas");
@@ -165,7 +170,7 @@
 
     function calcularValidade() {
         const hoje = new Date();
-        hoje.setDate(hoje.getDate() + 40); // Mantido em 40 dias conforme seu pedido
+        hoje.setDate(hoje.getDate() + 40);
         return hoje.toLocaleDateString('pt-BR');
     }
 
@@ -195,7 +200,8 @@
             desejo: document.getElementById("proximoDesejo").value || "N/A",
             premio: premiosData[sorteadoIndex].name,
             detalhe: premiosData[sorteadoIndex].desc,
-            validade: calcularValidade()
+            validade: calcularValidade(),
+            finalizado: false
         };
 
         localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
@@ -203,7 +209,11 @@
         setTimeout(() => {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             exibirResultado();
-            if (dadosGanhador.premio !== "Cupom Indicação") enviarDadosPlanilha(dadosGanhador);
+            if (dadosGanhador.premio !== "Cupom Indicação") {
+                enviarDadosPlanilha(dadosGanhador);
+                dadosGanhador.finalizado = true;
+                localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
+            }
         }, 5200);
     }
 
@@ -219,27 +229,35 @@
 
         if (dadosGanhador.premio === "Cupom Indicação") {
             document.getElementById("campoIndicado").style.display = "block";
+            if(dadosGanhador.finalizado) bloquearBotao();
         }
         atualizarLinkFinal();
     }
 
+    function bloquearBotao() {
+        const btn = document.getElementById("waLinkFinal");
+        const inputAmigo = document.getElementById("nomeAmigo");
+        enviadoParaPlanilha = true;
+        btn.innerText = "BILHETE ENVIADO!";
+        btn.classList.add("disabled");
+        inputAmigo.disabled = true;
+        inputAmigo.style.background = "#eee";
+    }
+
     function atualizarLinkFinal() {
+        if(enviadoParaPlanilha) return;
         const amigo = document.getElementById("nomeAmigo").value || "______";
         const btn = document.getElementById("waLinkFinal");
         
-        // Formatação robusta para evitar "?" no lugar dos emojis
+        // Emojis em código hexadecimal para evitar erro de codificação (?)
         const emojiPresente = "\uD83C\uDF81";
-        const emojiGanhador = "\uD83D\uDCC4";
+        const emojiUser = "\uD83D\uDC64";
+        const emojiTrofeu = "\uD83C\uDFC6";
+        const emojiMemo = "\uD83D\uDCDD";
         const emojiData = "\uD83D\uDCC5";
 
-        let texto = `${emojiPresente} *BILHETE PREMIADO - NOSTÁLGICAS!* \n\n` +
-                    `Olá! Ganhei um presente na roleta!\n\n` +
-                    `${emojiGanhador} *Ganhador:* ${dadosGanhador.nome}\n` +
-                    `🏆 *Prêmio:* ${dadosGanhador.premio}\n` +
-                    `📝 *Detalhe:* ${dadosGanhador.detalhe}\n` +
-                    `${emojiData} *Válido até:* ${dadosGanhador.validade}\n` +
-                    `🎁 *Amigo Indicado:* ${amigo}`;
-                    
+        let texto = `${emojiPresente} *BILHETE PREMIADO - NOSTÁLGICAS!*\n\nOlá! Ganhei um presente na roleta!\n\n${emojiUser} *Ganhador:* ${dadosGanhador.nome}\n${emojiTrofeu} *Prêmio:* ${dadosGanhador.premio}\n${emojiMemo} *Detalhe:* ${dadosGanhador.detalhe}\n${emojiData} *Válido até:* ${dadosGanhador.validade}\n${emojiPresente} *Amigo Indicado:* ${amigo}`;
+        
         btn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
     }
 
@@ -254,12 +272,21 @@
     }
 
     function verificarAcao(e) {
+        if (enviadoParaPlanilha) return true;
+
         if (dadosGanhador.premio === "Cupom Indicação") {
-            if (!document.getElementById("nomeAmigo").value) {
+            const amigoNome = document.getElementById("nomeAmigo").value;
+            if (!amigoNome || amigoNome.trim().length < 2) {
                 alert("Por favor, digite o nome do amigo antes de compartilhar!");
+                e.preventDefault();
                 return false;
             }
             enviarDadosPlanilha(dadosGanhador);
+            dadosGanhador.finalizado = true;
+            localStorage.setItem("nostalgicas_v2026", JSON.stringify(dadosGanhador));
+            
+            // Pequeno delay para garantir que o link do WhatsApp abra em nova aba no desktop
+            setTimeout(() => { bloquearBotao(); }, 500);
         }
         return true;
     }
